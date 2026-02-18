@@ -1,4 +1,4 @@
-export const NotesTagsQueries = `
+export const CREATE_TABLE = `
     CREATE TABLE IF NOT EXISTS notes_tags (
         note_id INTEGER,
         tag_id INTEGER,
