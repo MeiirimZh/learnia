@@ -1,10 +1,11 @@
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useSQLiteContext } from "expo-sqlite";
-import { INSERT, UPDATE } from "../../../database/queries/NotesQueries";
+import { INSERT, UPDATE, UPDATE_TITLE } from "../../../database/queries/NotesQueries";
 
 import { StyleSheet, ScrollView, View, TextInput, TouchableOpacity } from "react-native";
+import AppText from "../../../../components/AppText";
+import AppModal from "../../../../components/menus/AppModal";
 import Markdown from "react-native-markdown-display";
-import { Note } from "../../../../types";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { NotesStackParamList } from "../../../navigation/types";
@@ -21,8 +22,10 @@ export default function ViewNote({ navigation, route }: Props) {
 
     const [ noteContent, setNoteContent ] = useState<string>(note?.content ?? "");
     const [ noteId, setNoteId ] = useState<number | null>(note?.id ?? null);
+    const [ noteTitle, setNoteTitle ] = useState<string>(note?.title ?? "Новая заметка");
     const [ readMode, setReadMode ] = useState<boolean>(isReadMode);
     const [ today, setToday ] = useState<Date>(new Date());
+    const [ isModalVisible, setIsModalVisible ] = useState<boolean>(false);
     
     const saveTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -33,7 +36,7 @@ export default function ViewNote({ navigation, route }: Props) {
 
         if (noteId) {
             await db.runAsync(UPDATE, [
-                note?.title ?? "Новая заметка",
+                noteTitle,
                 noteContent,
                 note?.creation_date ?? date,
                 noteId
@@ -48,10 +51,25 @@ export default function ViewNote({ navigation, route }: Props) {
  
             setNoteId(result.lastInsertRowId);
         }
-    }
+    };
+
+    const changeTitle = async () => {
+        await db.runAsync(UPDATE_TITLE, [
+            noteTitle,
+            noteId
+        ]);
+    };
 
     useLayoutEffect(() => {
         navigation.setOptions({
+            headerTitle: () => (
+                <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+                    <AppText style={{ fontSize: 20, fontFamily: theme.fonts.semibold, color: theme.colors.onPrimary }}>
+                        { noteTitle }
+                    </AppText>
+                </TouchableOpacity>
+            ),
+            headerTintColor: theme.colors.onPrimary,
             headerRight: () => (
                 <TouchableOpacity
                     style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }} 
@@ -61,10 +79,9 @@ export default function ViewNote({ navigation, route }: Props) {
             ),
             headerRightContainerStyle: {
                 paddingRight: theme.spacing.md
-            },
-            title: note?.title ?? "Новая заметка"
+            }
         });
-    }, [navigation, note, readMode]);
+    }, [navigation, noteTitle, readMode]);
 
     useEffect(() => {
         if (saveTimer.current) {
@@ -82,22 +99,16 @@ export default function ViewNote({ navigation, route }: Props) {
         };
     }, [noteContent]);
 
-    if (!readMode) {
-        return (
-            <View style={ styles.container }>
+    return (
+        <View style={ styles.container }>
+            { !readMode ? (
                 <TextInput
-                    style={ styles.textInput }
+                    style={ [styles.textInput, { flex: 1 }] }
                     value={ noteContent }
                     onChangeText={ setNoteContent }
                     multiline
                     textAlignVertical="top" />
-            </View>
-        )
-    }
-
-    if (readMode) {
-        return (
-            <View style={ styles.container }>
+            ) : (
                 <View style={{ 
                     flex: 1,
                     borderRadius: 10,
@@ -108,9 +119,32 @@ export default function ViewNote({ navigation, route }: Props) {
                         </Markdown>
                     </ScrollView>
                 </View>
-            </View>
-        )
-    }
+            )}
+
+            <AppModal visible={ isModalVisible } onPress={ () => {
+                changeTitle();
+                setIsModalVisible(false);
+            } }>
+                <TextInput 
+                    style={ [styles.textInput, { fontSize: 16 }] }
+                    value={ noteTitle }
+                    onChangeText={ setNoteTitle }
+                    placeholder="Введите название" />
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', gap: theme.spacing.md }}>
+                    <TouchableOpacity onPress={() => setIsModalVisible(false)}>
+                        <AppText style={{ fontSize: 16 }}>Отмена</AppText>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => {
+                        changeTitle();
+                        setIsModalVisible(false);
+                    }}>
+                        <AppText style={{ fontSize: 16 }}>Сохранить</AppText>
+                    </TouchableOpacity>
+                </View>
+            </AppModal>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -119,10 +153,7 @@ const styles = StyleSheet.create({
         padding: theme.spacing.md
     },
     textInput: {
-        flex: 1,
-
         borderRadius: 10,
-
         backgroundColor: theme.colors.bgLight,
         padding: theme.spacing.md
     },

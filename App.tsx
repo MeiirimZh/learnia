@@ -7,6 +7,7 @@ import RootNavigator from "./src/navigation/RootNavigator";
 export default function App() {
     const [fontsLoaded] = useFonts({
         'Roboto Regular': require('./assets/fonts/Roboto Regular.ttf'),
+        'Roboto SemiBold': require('./assets/fonts/Roboto SemiBold.ttf'),
         'Roboto Bold': require('./assets/fonts/Roboto Bold.ttf')
     });
 

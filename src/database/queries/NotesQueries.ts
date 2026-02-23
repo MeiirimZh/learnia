@@ -18,6 +18,12 @@ export const UPDATE = `
     WHERE id = ?;
 `;
 
+export const UPDATE_TITLE = `
+    UPDATE notes
+    SET title = ?
+    WHERE id = ?;
+`;
+
 export const DROP_TABLE = `
     DROP TABLE IF EXISTS notes;
 `;

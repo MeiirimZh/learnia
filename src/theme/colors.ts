@@ -9,6 +9,8 @@ const colors: {
     text: string,
     textMuted: string,
 
+    danger: string,
+
     shadow: string,
     
     gradientPrimary: [string, string, ...string[]];
@@ -24,6 +26,8 @@ const colors: {
     textMuted: 'hsla(0, 0%, 30%, 1.0)',
 
     shadow: 'hsla(0, 0%, 0%, 1.0)',
+
+    danger: 'hsla(15, 100%, 50%, 1.0)',
 
     gradientPrimary: ['hsla(46, 100%, 50%, 1.0)', 'hsla(20, 100%, 50%, 1.0)']
 };
