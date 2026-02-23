@@ -36,8 +36,8 @@ export default function MainTabs() {
             }
           })}>
             <Tab.Screen name="NotesStack" component={ NotesStack } options={{ title: 'Заметки', headerShown: false }} />
-            <Tab.Screen name="SetsStack" component={ SetsStack } options={{ title: 'Карточки' }} />
-            <Tab.Screen name="TestsStack" component={ TestsStack } options={{ title: 'Тесты' }} />
+            <Tab.Screen name="SetsStack" component={ SetsStack } options={{ title: 'Карточки', headerShown: false }} />
+            <Tab.Screen name="TestsStack" component={ TestsStack } options={{ title: 'Тесты', headerShown: false }} />
         </Tab.Navigator>
     )
 }
