@@ -10,7 +10,7 @@ type Props = React.PropsWithChildren<{
     height: number;
 }>;
 
-export default function GradientBorderTouchable({ onPress, children, colors, width, height }: Props) {
+export default function GradientBorderButton({ onPress, children, colors, width, height }: Props) {
     return (
         <LinearGradient colors={ colors } style={ [{width, height}, styles.gradient] }
             start={{ x: 0, y: 0 }}

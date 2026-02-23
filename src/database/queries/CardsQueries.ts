@@ -15,5 +15,5 @@ export const INSERT = `
 `;
 
 export const DROP_TABLE = `
-    DROP TABLE IF NOT EXISTS cards;
+    DROP TABLE IF EXISTS cards;
 `;

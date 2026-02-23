@@ -1,5 +1,12 @@
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
+export type Note = {
+    id: number,
+    title: string,
+    content: string,
+    creation_date: string
+};
+
 export type TabParamList = {
     Notes: undefined;
     Cards: undefined;

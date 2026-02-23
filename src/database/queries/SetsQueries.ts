@@ -16,5 +16,5 @@ export const INSERT = `
 `;
 
 export const DROP_TABLE = `
-    DROP TABLE IF NOT EXISTS sets;
+    DROP TABLE IF EXISTS sets;
 `;
