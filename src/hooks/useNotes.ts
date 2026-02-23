@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { useSQLiteContext } from "expo-sqlite";
 
 import { Note } from "../../types";
@@ -21,9 +22,11 @@ const useNotes = () => {
         }
     };
 
-    useEffect(() => {
-        loadNotes();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            loadNotes();
+        }, [])
+    );
 
     return { notes, setNotes, loading };
 };

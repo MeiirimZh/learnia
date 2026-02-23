@@ -1,4 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useSQLiteContext } from "expo-sqlite";
+import { INSERT, UPDATE } from "../../../database/queries/NotesQueries";
 
 import { StyleSheet, ScrollView, View, TextInput, TouchableOpacity } from "react-native";
 import Markdown from "react-native-markdown-display";
@@ -13,16 +15,40 @@ import { Ionicons } from "@expo/vector-icons";
 type Props = StackScreenProps<NotesStackParamList, "ViewNote">;
 
 export default function ViewNote({ navigation, route }: Props) {
+    const db = useSQLiteContext();
+
     const { note, isReadMode } = route.params;
 
     const [ noteContent, setNoteContent ] = useState<string>(note?.content ?? "");
+    const [ noteId, setNoteId ] = useState<number | null>(note?.id ?? null);
     const [ readMode, setReadMode ] = useState<boolean>(isReadMode);
+    const [ today, setToday ] = useState<Date>(new Date());
     
     const saveTimer = useRef<NodeJS.Timeout | null>(null);
 
-    const saveNote = () => {
-        console.log("Saved!")
-    };
+    const saveNote = async () => {
+        let day = today.getDate() > 9 ? today.getDate() : `0${today.getDate()}`;
+        let month = today.getMonth() + 1 > 9 ? today.getMonth() + 1 : `0${today.getMonth() + 1}`;
+        let date = `${today.getFullYear()}-${month}-${day}`;
+
+        if (noteId) {
+            await db.runAsync(UPDATE, [
+                note?.title ?? "Новая заметка",
+                noteContent,
+                note?.creation_date ?? date,
+                noteId
+            ]);
+        }
+        else {
+            const result = await db.runAsync(INSERT, [
+                "Новая заметка",
+                noteContent,
+                date
+            ]);
+ 
+            setNoteId(result.lastInsertRowId);
+        }
+    }
 
     useLayoutEffect(() => {
         navigation.setOptions({

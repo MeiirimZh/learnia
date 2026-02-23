@@ -12,6 +12,12 @@ export const INSERT = `
     (?, ?, ?);
 `;
 
+export const UPDATE = `
+    UPDATE notes
+    SET title = ?, content = ?, creation_date = ?
+    WHERE id = ?;
+`;
+
 export const DROP_TABLE = `
     DROP TABLE IF EXISTS notes;
 `;
