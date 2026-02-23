@@ -32,7 +32,7 @@ export default function NotesList({ navigation }: Props) {
                         title={ item.title } 
                         content={ item.content }
                         date={ getFormattedMonthDayFromDateString(item.creation_date) }
-                        onPress={ () => {} } />
+                        onPress={ () => navigation.navigate("ViewNote", { note: item, isReadMode: true }) } />
                 )}
                 ItemSeparatorComponent={() => <View style={{ height: theme.spacing.md }} />}
                 showsVerticalScrollIndicator={ false } />

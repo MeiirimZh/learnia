@@ -90,7 +90,7 @@ export default function ViewNote({ navigation, route }: Props) {
 
         saveTimer.current = setTimeout(() => {
             saveNote();
-        }, 1000);
+        }, 500);
 
         return () => {
             if (saveTimer.current) {
@@ -103,7 +103,7 @@ export default function ViewNote({ navigation, route }: Props) {
         <View style={ styles.container }>
             { !readMode ? (
                 <TextInput
-                    style={ [styles.textInput, { flex: 1 }] }
+                    style={ [styles.textInput, { flex: 1, fontSize: 16 }] }
                     value={ noteContent }
                     onChangeText={ setNoteContent }
                     multiline
@@ -112,9 +112,18 @@ export default function ViewNote({ navigation, route }: Props) {
                 <View style={{ 
                     flex: 1,
                     borderRadius: 10,
-                    backgroundColor: theme.colors.bgLight}}>
+                    backgroundColor: theme.colors.bgLight
+                    }}>
                     <ScrollView style={ styles.scrollView }>
-                        <Markdown>
+                        <Markdown style={{
+                            body: {
+                                fontSize: 16
+                            },
+                            code_inline: {
+                                backgroundColor: "#ededeb",
+                                color: "#eb5757"
+                            }
+                        }}>
                             { noteContent }
                         </Markdown>
                     </ScrollView>
