@@ -1,11 +1,13 @@
 import { createStackNavigator } from "@react-navigation/stack";
 
+import { SetsStackParamList } from "../../../navigation/types";
+
 import SetsList from "./SetsList";
 import ViewSet from "./ViewSet";
 
 import { theme } from "../../../theme";
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<SetsStackParamList>();
 
 export default function SetsStack() {
     return (
@@ -14,12 +16,13 @@ export default function SetsStack() {
                     headerStyle: {
                         backgroundColor: theme.colors.primary
                     },
+                    headerTintColor: theme.colors.onPrimary,
                     headerTitleStyle: {
                         color: theme.colors.onPrimary
                     }
             }}>
-            <Stack.Screen name="NotesList" component={ SetsList } options={{ title: 'Карточки' }} />
-            <Stack.Screen name="ViewNote" component={ ViewSet } />
+            <Stack.Screen name="SetsList" component={ SetsList } options={{ title: 'Карточки' }} />
+            <Stack.Screen name="ViewSet" component={ ViewSet } />
         </Stack.Navigator>
     )
 }

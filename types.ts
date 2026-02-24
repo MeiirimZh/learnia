@@ -7,6 +7,12 @@ export type Note = {
     creation_date: string
 };
 
+export type Category = {
+    id: number,
+    name: string,
+    color: string
+};
+
 export type TabParamList = {
     Notes: undefined;
     Cards: undefined;
