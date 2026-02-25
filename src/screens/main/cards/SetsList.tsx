@@ -4,8 +4,6 @@ import { StyleSheet, View, ScrollView, TextInput, TouchableOpacity, FlatList } f
 import AppText from "../../../../components/AppText";
 import AppModal from "../../../../components/menus/AppModal";
 
-import { useSQLiteContext } from "expo-sqlite";
-import * as CategoriesQueries from "../../../database/queries/CategoriesQueries";
 import useCategories from "../../../hooks/useCategories";
 
 import FloatingActions from '../../../../components/menus/FloatingActions';
@@ -28,27 +26,12 @@ type Props = {
 };
 
 export default function SetsList({ navigation }: Props) {
-    const db = useSQLiteContext();
-
-    const { categories, loadCategories } = useCategories();
+    const { categories } = useCategories();
 
     const [ isSetModalVisible, setIsSetModalVisible ] = useState<boolean>(false);
     const [ isChoiceModalVisible, setIsChoiceModalVisible ] = useState<boolean>(false);
-    const [ isCategoryModalVisible, setIsCategoryModalVisible ] = useState<boolean>(false);
 
     const [ selectedCategory, setSelectedCategory ] = useState<string>("Нет");
-
-    const [ categoryName, setCategoryName ] = useState<string>("");
-    const [ color, setColor ] = useState("#ababab");
-
-    const createCategory = async () => {
-        await db.runAsync(CategoriesQueries.INSERT, [
-            categoryName,
-            color
-        ]);
-
-        await loadCategories();
-    };
 
     return (
         <View style={ styles.container }>
@@ -101,40 +84,15 @@ export default function SetsList({ navigation }: Props) {
 
                             backgroundColor: theme.colors.primary 
                         }}
-                        onPress={() => setIsCategoryModalVisible(true)} >
+                        onPress={async () => {
+                            setIsChoiceModalVisible(false);
+                            setIsSetModalVisible(false);
+                            navigation.navigate("CreateCategory")
+                        }} >
                             <Ionicons name="add" color={ theme.colors.onPrimary } size={ 24 } />
                         </TouchableOpacity>
                     </View>
                 </View>
-            </AppModal>
-
-            <AppModal visible={ isCategoryModalVisible } onPress={() => setIsCategoryModalVisible(false)}>
-                <ScrollView contentContainerStyle={ styles.modal }>
-                    <TextInput
-                        style={ styles.textInput }
-                        value={ categoryName }
-                        onChangeText={ setCategoryName }
-                        placeholder="Название" />
-
-                    <View style={{ flexDirection: 'row', gap: theme.spacing.md, alignItems: 'center' }}>
-                        <AppText>Цвет: </AppText>
-                        <TouchableOpacity 
-                            style={{ width: 40, height: 40, borderRadius: 10, backgroundColor: color }}
-                            onPress={() => navigation.navigate("ColorPick", {
-                                initialColor: color,
-                                onSelect: (selected) => setColor(selected)
-                            })} />
-                    </View>
-
-                    <TouchableOpacity 
-                        style={ styles.createButton }
-                        onPress={() => {
-                            createCategory();
-                            setIsCategoryModalVisible(false);
-                        }}>
-                        <AppText style={{ color: theme.colors.onPrimary }}>Создать категорию</AppText>
-                    </TouchableOpacity>
-                </ScrollView>
             </AppModal>
         </View>
     )

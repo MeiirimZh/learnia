@@ -6,6 +6,8 @@ import DatabaseInitializer from "../database/DatabaseInitializer";
 
 import MainTabs from "./MainTabs";
 import ColorPick from "../screens/main/others/ColorPick";
+import CreateCategory from "../screens/main/categories/CreateCategory";
+import ViewCategory from "../screens/main/categories/ViewCategory";
 
 import { RootStackParamList } from "./types";
 
@@ -36,6 +38,32 @@ export default function RootNavigator() {
                         component={ ColorPick }
                         options={{ 
                             title: 'Выбор цвета',
+                            headerStyle: {
+                                backgroundColor: theme.colors.primary
+                            },
+                            headerTintColor: theme.colors.onPrimary,
+                            headerTitleStyle: {
+                                color: theme.colors.onPrimary
+                            }
+                        }} />
+                    <Stack.Screen
+                        name="CreateCategory"
+                        component={ CreateCategory } 
+                        options={{
+                            title: 'Создание категории',
+                            headerStyle: {
+                                backgroundColor: theme.colors.primary
+                            },
+                            headerTintColor: theme.colors.onPrimary,
+                            headerTitleStyle: {
+                                color: theme.colors.onPrimary
+                            }
+                        }} />
+                    <Stack.Screen
+                        name="ViewCategory"
+                        component={ ViewCategory }
+                        options={{
+                            title: 'Изменение категории',
                             headerStyle: {
                                 backgroundColor: theme.colors.primary
                             },

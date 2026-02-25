@@ -1,7 +1,6 @@
 import { useState, useLayoutEffect } from "react";
 
 import { View, TouchableOpacity } from "react-native";
-import AppText from "../../../../components/AppText";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/types";
