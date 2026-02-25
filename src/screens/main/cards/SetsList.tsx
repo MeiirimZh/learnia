@@ -1,10 +1,11 @@
 import { useState } from "react";
 
-import { StyleSheet, View, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, View, ScrollView, TextInput, TouchableOpacity, FlatList } from "react-native";
 import AppText from "../../../../components/AppText";
 import AppModal from "../../../../components/menus/AppModal";
 
-import { INSERT } from "../../../database/queries/CategoriesQueries";
+import { useSQLiteContext } from "expo-sqlite";
+import * as CategoriesQueries from "../../../database/queries/CategoriesQueries";
 import useCategories from "../../../hooks/useCategories";
 
 import FloatingActions from '../../../../components/menus/FloatingActions';
@@ -27,7 +28,9 @@ type Props = {
 };
 
 export default function SetsList({ navigation }: Props) {
-    const { categories } = useCategories();
+    const db = useSQLiteContext();
+
+    const { categories, loadCategories } = useCategories();
 
     const [ isSetModalVisible, setIsSetModalVisible ] = useState<boolean>(false);
     const [ isChoiceModalVisible, setIsChoiceModalVisible ] = useState<boolean>(false);
@@ -37,6 +40,15 @@ export default function SetsList({ navigation }: Props) {
 
     const [ categoryName, setCategoryName ] = useState<string>("");
     const [ color, setColor ] = useState("#ababab");
+
+    const createCategory = async () => {
+        await db.runAsync(CategoriesQueries.INSERT, [
+            categoryName,
+            color
+        ]);
+
+        await loadCategories();
+    };
 
     return (
         <View style={ styles.container }>
@@ -59,16 +71,7 @@ export default function SetsList({ navigation }: Props) {
                         </View>
                         <AppText>{ selectedCategory }</AppText>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-
-                        borderRadius: 10,
-
-                        backgroundColor: theme.colors.primary,
-
-                        padding: theme.spacing.md
-                    }}>
+                    <TouchableOpacity style={ styles.createButton }>
                         <AppText style={{ color: theme.colors.onPrimary }}>Создать набор</AppText>
                     </TouchableOpacity>
                 </ScrollView>
@@ -76,13 +79,15 @@ export default function SetsList({ navigation }: Props) {
 
             <AppModal visible={ isChoiceModalVisible } onPress={() => setIsChoiceModalVisible(false)}>
                 <View>
-                    <ScrollView>
-                        {categories.length > 0 ? (
-                            <AppText>Не пусто</AppText>
-                        ): (
-                            <AppText>Пусто</AppText>
-                        )}
-                    </ScrollView>
+                    {categories.length > 0 ? (
+                        <FlatList
+                            data={ categories }
+                            renderItem={({ item }) => (
+                                <AppText>{ item.name }</AppText>
+                            )}/>
+                    ): (
+                        <AppText>Пусто</AppText>
+                    )}
 
                     <View style={{ alignSelf: 'flex-end' }}>
                         <TouchableOpacity style={{
@@ -120,6 +125,15 @@ export default function SetsList({ navigation }: Props) {
                                 onSelect: (selected) => setColor(selected)
                             })} />
                     </View>
+
+                    <TouchableOpacity 
+                        style={ styles.createButton }
+                        onPress={() => {
+                            createCategory();
+                            setIsCategoryModalVisible(false);
+                        }}>
+                        <AppText style={{ color: theme.colors.onPrimary }}>Создать категорию</AppText>
+                    </TouchableOpacity>
                 </ScrollView>
             </AppModal>
         </View>
@@ -139,6 +153,17 @@ const styles = StyleSheet.create({
     textInput: {
         borderRadius: 10,
         backgroundColor: theme.colors.bgLight,
+        padding: theme.spacing.md
+    },
+
+    createButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        borderRadius: 10,
+
+        backgroundColor: theme.colors.primary,
+
         padding: theme.spacing.md
     }
 });

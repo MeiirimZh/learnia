@@ -9,6 +9,8 @@ import ColorPick from "../screens/main/others/ColorPick";
 
 import { RootStackParamList } from "./types";
 
+import { theme } from "../theme";
+
 const Stack = createStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
@@ -32,7 +34,16 @@ export default function RootNavigator() {
                     <Stack.Screen
                         name="ColorPick"
                         component={ ColorPick }
-                        options={{ title: 'Выбор цвета' }} />
+                        options={{ 
+                            title: 'Выбор цвета',
+                            headerStyle: {
+                                backgroundColor: theme.colors.primary
+                            },
+                            headerTintColor: theme.colors.onPrimary,
+                            headerTitleStyle: {
+                                color: theme.colors.onPrimary
+                            }
+                        }} />
                 </Stack.Navigator>
         </SQLiteProvider>
     )
