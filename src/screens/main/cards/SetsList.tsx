@@ -107,7 +107,7 @@ export default function SetsList({ navigation }: Props) {
                                     if (item.name !== "Нет") {
                                         closeAllModals();
 
-                                        navigation.navigate("CreateCategory", {
+                                        navigation.navigate("ViewCategory", {
                                             category: item,
                                             onGoBack: () => {
                                                 openAllModals();
@@ -134,7 +134,7 @@ export default function SetsList({ navigation }: Props) {
                     } ]}
                     onPress={() => {
                         closeAllModals();
-                        navigation.navigate("CreateCategory", {
+                        navigation.navigate("ViewCategory", {
                             onGoBack: () => {
                                 openAllModals();
                             }

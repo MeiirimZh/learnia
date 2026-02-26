@@ -6,11 +6,10 @@ export type RootStackParamList = {
         initialColor: string,
         onSelect: (color: string) => void;
     };
-    CreateCategory: {
+    ViewCategory: {
         category?: Category;
         onGoBack?: () => void;
     } | undefined,
-    ViewCategory: undefined
 };
 
 export type NotesStackParamList = {
