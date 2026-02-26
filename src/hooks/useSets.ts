@@ -2,17 +2,17 @@ import { useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useSQLiteContext } from "expo-sqlite";
 
-import { Category } from "../../types";
+import { Set } from "../../types";
 
-const useCategories = () => {
-    const [ categories, setCategories ] = useState<Category[]>([]);
+const useSets = () => {
+    const [ sets, setSets ] = useState<Set[]>([]);
     const [ loading, setLoading ] = useState<boolean>(true);
     const db = useSQLiteContext();
 
-    const loadCategories = async () => {
+    const loadSets = async () => {
         try {
-            const results = await db.getAllAsync<Category>("SELECT * FROM categories ORDER BY id;");
-            setCategories(results);
+            const results = await db.getAllAsync<Set>("SELECT * FROM sets ORDER BY id;");
+            setSets(results);
         }
         catch (error) {
             console.log("Database error: ", error);
@@ -24,11 +24,11 @@ const useCategories = () => {
 
     useFocusEffect(
         useCallback(() => {
-            loadCategories();
+            loadSets();
         }, [])
     );
 
-    return { categories, setCategories, loading };
+    return { sets, setSets, loading, loadSets };
 };
-
-export default useCategories;
+    
+export default useSets;

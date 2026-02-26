@@ -13,6 +13,13 @@ export type Category = {
     color: string
 };
 
+export type Set = {
+    id: number,
+    title: string,
+    version: string,
+    category_id: number
+}
+
 export type TabParamList = {
     Notes: undefined;
     Cards: undefined;

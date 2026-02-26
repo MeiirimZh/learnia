@@ -1,21 +1,26 @@
 import { useState, useMemo } from "react";
 
-import { StyleSheet, View, ScrollView, TextInput, TouchableOpacity, FlatList } from "react-native";
-import AppText from "../../../../components/AppText";
-import AppModal from "../../../../components/menus/AppModal";
-import CategoryItem from "../../../../components/items/CategoryItem";
-
-import useCategories from "../../../hooks/useCategories";
-
-import FloatingActions from '../../../../components/menus/FloatingActions';
-import FloatingActionsButton from '../../../../components/buttons/FloatingActionsButton';
-
-import { theme } from "../../../theme";
-import { Ionicons } from "@expo/vector-icons";
-
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList, SetsStackParamList } from "../../../navigation/types";
+
+import { useSQLiteContext } from "expo-sqlite";
+import * as SetsQueries from "../../../database/queries/SetsQueries";
+import useSets from "../../../hooks/useSets";
+import useCategories from "../../../hooks/useCategories";
+
+import { StyleSheet, View, ScrollView, TextInput, TouchableOpacity, FlatList } from "react-native";
+import AppText from "../../../../components/AppText";
+import AppModal from "../../../../components/menus/AppModal";
+import FloatingActions from '../../../../components/menus/FloatingActions';
+import FloatingActionsButton from '../../../../components/buttons/FloatingActionsButton';
+import SetItem from "../../../../components/items/SetItem";
+import CategoryItem from "../../../../components/items/CategoryItem";
+import { Ionicons } from "@expo/vector-icons";
+
+import { theme } from "../../../theme";
+
+import { getTodayFormatted } from "../../../utils/date";
 
 type SetsNav = StackNavigationProp<SetsStackParamList, "SetsList">;
 type RootNav = StackNavigationProp<RootStackParamList>;
@@ -27,19 +32,28 @@ type Props = {
 };
 
 export default function SetsList({ navigation }: Props) {
+    const db = useSQLiteContext();
+    const { sets, loadSets } = useSets();
     const { categories } = useCategories();
 
     const [ isSetModalVisible, setIsSetModalVisible ] = useState<boolean>(false);
     const [ isChoiceModalVisible, setIsChoiceModalVisible ] = useState<boolean>(false);
 
+    const [ title, setTitle ] = useState<string>("");
+    const [ version, setVersion ] = useState<string>("1.0");
+    const [ categoryId, setCategoryId ] = useState<number>(1);
     const [ selectedCategory, setSelectedCategory ] = useState<string>("Нет");
 
-    const categoriesWithNone = useMemo(() => {
-        return [
-            { id: 0, name: "Нет", color: "#ababab" },
-            ...categories
-        ];
-    }, [categories]);
+    const createSet = async () => {
+        await db.runAsync(SetsQueries.INSERT, [
+            title,
+            getTodayFormatted(),
+            version,
+            categoryId
+        ]);
+
+        await loadSets();
+    };
 
     const closeAllModals = () => {
         setIsChoiceModalVisible(false);
@@ -53,6 +67,30 @@ export default function SetsList({ navigation }: Props) {
 
     return (
         <View style={ styles.container }>
+            <FlatList
+                style={{ flex: 1 }}
+                data={ sets }
+                renderItem={ ({ item }) => {
+                    const category = categories.find(
+        		        (category) => category.id === item.category_id
+        	        );
+                    const color = category?.color ?? "#ababab";
+
+                    return ( 
+                        <SetItem 
+                            title={ item.title }
+                            color={ color }
+                            totalCardsCount={ 1 }
+                            onPressMain={() => navigation.navigate("ViewSet")}
+                            onPressReview={() => {}}
+                            onPressPractice={() => {}}
+                            onPressEdit={() => {}}
+                            onPressShare={() => {}} />
+                    )
+                }}
+                ItemSeparatorComponent={() => ( <View style={{ height: theme.spacing.md }} /> )}
+                showsVerticalScrollIndicator={ false } />
+
             <FloatingActions>
                 <FloatingActionsButton name="add" color={ theme.colors.text } onPress={() => setIsSetModalVisible(true)} />
             </FloatingActions>
@@ -65,9 +103,11 @@ export default function SetsList({ navigation }: Props) {
                     <View style={ styles.form }>
                         <TextInput
                             style={ [ styles.textInput, styles.shadow ] }
+                            value={ title }
+                            onChangeText={ setTitle }
                             placeholder="Название" />
                         <TextInput
-                            style={ [ styles.textInput, styles.shadow ] } 
+                            style={ [ styles.textInput, styles.shadow ] }
                             placeholder="Версия (необязательно)" />
                     </View>
                     <TouchableOpacity onPress={() => setIsChoiceModalVisible(true)}>
@@ -77,7 +117,12 @@ export default function SetsList({ navigation }: Props) {
                         </View>
                         <AppText numberOfLines={ 4 }>{ selectedCategory }</AppText>
                     </TouchableOpacity>
-                    <TouchableOpacity style={ [ styles.createButton, styles.shadow ] }>
+                    <TouchableOpacity 
+                        style={ [ styles.createButton, styles.shadow ] }
+                        onPress={() => {
+                            createSet();
+                            closeAllModals();
+                        }}>
                         <AppText style={{ color: theme.colors.onPrimary }}>Создать набор</AppText>
                     </TouchableOpacity>
                 </ScrollView>
@@ -87,7 +132,7 @@ export default function SetsList({ navigation }: Props) {
                 <View style={{ height: 300 }}>
                     <FlatList
                         style={{ backgroundColor: theme.colors.bgDark, borderRadius: 5, padding: theme.spacing.sm }}
-                        data={ categoriesWithNone }
+                        data={ categories }
                         renderItem={ ({ item }) => {
                             let name = item.name;
 
@@ -100,7 +145,8 @@ export default function SetsList({ navigation }: Props) {
                                 name={ name }
                                 color={ item.color }
                                 onPress={() => {
-                                    setSelectedCategory( item.name );
+                                    setCategoryId(item.id);
+                                    setSelectedCategory(item.name);
                                     setIsChoiceModalVisible(false);
                                 }}
                                 onSideButtonPress={() => {

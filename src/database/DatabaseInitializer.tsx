@@ -36,6 +36,7 @@ export default function DatabaseInitializer({ onReady }: Props) {
 
                 await db.execAsync(CategoriesQueries.DROP_TABLE);
                 await db.execAsync(CategoriesQueries.CREATE_TABLE);
+                await db.runAsync(CategoriesQueries.INSERT, ["Нет", "#ababab"]);
 
                 await db.execAsync(NotesQueries.DROP_TABLE);
                 await db.execAsync(NotesQueries.CREATE_TABLE);
