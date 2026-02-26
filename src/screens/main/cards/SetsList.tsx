@@ -87,7 +87,10 @@ export default function SetsList({ navigation }: Props) {
                         onPress={async () => {
                             setIsChoiceModalVisible(false);
                             setIsSetModalVisible(false);
-                            navigation.navigate("CreateCategory")
+                            navigation.navigate("CreateCategory", { onGoBack: () => {
+                                setIsSetModalVisible(true)
+                                setIsChoiceModalVisible(true)
+                            } })
                         }} >
                             <Ionicons name="add" color={ theme.colors.onPrimary } size={ 24 } />
                         </TouchableOpacity>

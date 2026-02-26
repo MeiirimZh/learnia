@@ -15,6 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 type Props = StackScreenProps<RootStackParamList, "CreateCategory">;
 
 export default function CreateCategory({ route, navigation }: Props) {
+    const onGoBack = route.params?.onGoBack;
+
     const db = useSQLiteContext();
 
     const [ name, setName ] = useState<string>("");
@@ -34,6 +36,7 @@ export default function CreateCategory({ route, navigation }: Props) {
                     style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
                     onPress={async () => {
                         await addCategory();
+                        onGoBack?.();
                         navigation.goBack();
                     }}>
                     <Ionicons name="checkmark" size={ 24 } color={ theme.colors.onPrimary } />

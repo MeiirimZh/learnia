@@ -6,7 +6,9 @@ export type RootStackParamList = {
         initialColor: string,
         onSelect: (color: string) => void;
     };
-    CreateCategory: undefined,
+    CreateCategory: {
+        onGoBack?: () => void;
+    } | undefined,
     ViewCategory: undefined
 };
 
