@@ -11,6 +11,12 @@ export const INSERT = `
     (?, ?);
 `;
 
+export const UPDATE = `
+    UPDATE categories
+    SET name = ?, color = ?
+    WHERE id = ?;
+`;
+
 export const DROP_TABLE = `
     DROP TABLE IF EXISTS categories;
 `;

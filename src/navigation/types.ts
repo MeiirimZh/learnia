@@ -1,4 +1,4 @@
-import { Note } from "../../types";
+import { Note, Category } from "../../types";
 
 export type RootStackParamList = {
     MainTabs: undefined,
@@ -7,6 +7,7 @@ export type RootStackParamList = {
         onSelect: (color: string) => void;
     };
     CreateCategory: {
+        category?: Category;
         onGoBack?: () => void;
     } | undefined,
     ViewCategory: undefined

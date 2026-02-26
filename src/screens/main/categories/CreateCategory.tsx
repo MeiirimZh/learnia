@@ -15,17 +15,27 @@ import { Ionicons } from "@expo/vector-icons";
 type Props = StackScreenProps<RootStackParamList, "CreateCategory">;
 
 export default function CreateCategory({ route, navigation }: Props) {
+    const category = route.params?.category;
     const onGoBack = route.params?.onGoBack;
 
     const db = useSQLiteContext();
 
-    const [ name, setName ] = useState<string>("");
-    const [ color, setColor ] = useState<string>("#ababab");
+    const [ id, setId ] = useState<number | null>(category?.id ?? null);
+    const [ name, setName ] = useState<string>(category?.name ?? "");
+    const [ color, setColor ] = useState<string>(category?.color ?? "#ababab");
 
     const addCategory = async () => {
         await db.runAsync(CategoriesQueries.INSERT, [
             name,
             color
+        ]);
+    };
+
+    const updateCategory = async () => {
+        await db.runAsync(CategoriesQueries.UPDATE, [
+            name,
+            color,
+            id
         ]);
     };
 
@@ -35,7 +45,12 @@ export default function CreateCategory({ route, navigation }: Props) {
                 <TouchableOpacity
                     style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
                     onPress={async () => {
-                        await addCategory();
+                        if (id) {
+                            await updateCategory();
+                        }
+                        else {
+                            await addCategory();
+                        }
                         onGoBack?.();
                         navigation.goBack();
                     }}>

@@ -36,10 +36,20 @@ export default function SetsList({ navigation }: Props) {
 
     const categoriesWithNone = useMemo(() => {
         return [
-            { name: "Нет", color: "#ababab" },
+            { id: 0, name: "Нет", color: "#ababab" },
             ...categories
         ];
     }, [categories]);
+
+    const closeAllModals = () => {
+        setIsChoiceModalVisible(false);
+        setIsSetModalVisible(false);
+    };
+
+    const openAllModals = () => {
+        setIsSetModalVisible(true);
+        setIsChoiceModalVisible(true);
+    };
 
     return (
         <View style={ styles.container }>
@@ -93,7 +103,18 @@ export default function SetsList({ navigation }: Props) {
                                     setSelectedCategory( item.name );
                                     setIsChoiceModalVisible(false);
                                 }}
-                                onSideButtonPress={() => {}} />
+                                onSideButtonPress={() => {
+                                    if (item.name !== "Нет") {
+                                        closeAllModals();
+
+                                        navigation.navigate("CreateCategory", {
+                                            category: item,
+                                            onGoBack: () => {
+                                                openAllModals();
+                                            }
+                                        });
+                                    }
+                                }} />
                             )
                         } }
                         ItemSeparatorComponent={() => (
@@ -112,12 +133,10 @@ export default function SetsList({ navigation }: Props) {
                         backgroundColor: theme.colors.primary 
                     } ]}
                     onPress={() => {
-                        setIsChoiceModalVisible(false);
-                        setIsSetModalVisible(false);
+                        closeAllModals();
                         navigation.navigate("CreateCategory", {
                             onGoBack: () => {
-                                setIsSetModalVisible(true);
-                                setIsChoiceModalVisible(true);
+                                openAllModals();
                             }
                         });
                     }}>
