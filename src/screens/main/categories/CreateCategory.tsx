@@ -91,6 +91,12 @@ const styles = StyleSheet.create({
 
         borderRadius: 10,
 
+        elevation: 5,
+        shadowColor: theme.colors.shadow,
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.12,
+        shadowRadius: 10,
+
         backgroundColor: theme.colors.bgLight,
 
         padding: theme.spacing.md
