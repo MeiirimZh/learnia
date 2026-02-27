@@ -7,6 +7,7 @@ import useCards from "../../../hooks/useCards";
 
 import { StyleSheet, View, FlatList } from "react-native";
 import AppText from "../../../../components/AppText";
+import CardItem from "../../../../components/items/CardItem";
 import FloatingActions from "../../../../components/menus/FloatingActions";
 import FloatingActionsButton from "../../../../components/buttons/FloatingActionsButton";
 
@@ -28,8 +29,10 @@ export default function ViewSet({ navigation, route }: Props) {
         <View style={ styles.container }>
             <FlatList
                 data={ cards }
+                numColumns={ 2 } 
+                columnWrapperStyle={{ gap: theme.spacing.md }}
                 renderItem={({ item }) => (
-                    <AppText>{ item.front }</AppText>
+                    <CardItem front={ item.front } back={ item.back } />
                 )}/>
 
             <FloatingActions>
