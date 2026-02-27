@@ -81,7 +81,7 @@ export default function SetsList({ navigation }: Props) {
                             title={ item.title }
                             color={ color }
                             totalCardsCount={ 1 }
-                            onPressMain={() => navigation.navigate("ViewSet")}
+                            onPressMain={() => navigation.navigate("ViewSet", { set: item })}
                             onPressReview={() => {}}
                             onPressPractice={() => {}}
                             onPressEdit={() => {}}

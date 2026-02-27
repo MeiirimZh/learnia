@@ -1,9 +1,47 @@
-import { View, Text } from "react-native";
+import { useLayoutEffect } from "react";
 
-export default function ViewSet() {
+import { StackScreenProps } from "@react-navigation/stack";
+import { SetsStackParamList } from "../../../navigation/types";
+
+import useCards from "../../../hooks/useCards";
+
+import { StyleSheet, View, FlatList } from "react-native";
+import AppText from "../../../../components/AppText";
+import FloatingActions from "../../../../components/menus/FloatingActions";
+import FloatingActionsButton from "../../../../components/buttons/FloatingActionsButton";
+
+import { theme } from "../../../theme";
+
+type Props = StackScreenProps<SetsStackParamList, "ViewSet">;
+
+export default function ViewSet({ navigation, route }: Props) {
+    const { set } = route.params;
+    const { cards } = useCards(set.id);
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: set.title
+        });
+    }, [set]);
+
     return (
-        <View>
-            <Text>Просмотр набора карточек</Text>
+        <View style={ styles.container }>
+            <FlatList
+                data={ cards }
+                renderItem={({ item }) => (
+                    <AppText>{ item.front }</AppText>
+                )}/>
+
+            <FloatingActions>
+                <FloatingActionsButton name="add" color={ theme.colors.text } onPress={() => navigation.navigate("ViewCard", { setId: set.id })} />
+            </FloatingActions>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: theme.spacing.md
+    }
+});

@@ -4,6 +4,7 @@ import { SetsStackParamList } from "../../../navigation/types";
 
 import SetsList from "./SetsList";
 import ViewSet from "./ViewSet";
+import ViewCard from "./ViewCard";
 
 import { theme } from "../../../theme";
 
@@ -23,6 +24,7 @@ export default function SetsStack() {
             }}>
             <Stack.Screen name="SetsList" component={ SetsList } options={{ title: 'Карточки' }} />
             <Stack.Screen name="ViewSet" component={ ViewSet } />
+            <Stack.Screen name="ViewCard" component={ ViewCard } />
         </Stack.Navigator>
     )
 }

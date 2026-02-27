@@ -18,7 +18,14 @@ export type Set = {
     title: string,
     version: string,
     category_id: number
-}
+};
+
+export type Card = {
+    id: number,
+    front: string,
+    back: string,
+    set_id: number
+};
 
 export type TabParamList = {
     Notes: undefined;
