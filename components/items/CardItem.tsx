@@ -1,17 +1,23 @@
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { useWindowDimensions, StyleSheet, View, TouchableOpacity } from "react-native";
 import AppText from "../AppText";
+import { Ionicons } from "@expo/vector-icons";
 
 import { theme } from "../../src/theme";
 
 type Props = {
     front: string,
-    back: string
+    back: string, 
+    onPress: () => void
 };
 
-export default function CardItem({ front, back }: Props) {
+export default function CardItem({ front, back, onPress }: Props) {
+    const { width } = useWindowDimensions();
+
     return (
-        <View style={ styles.container }>
-            <TouchableOpacity style={ styles.content }>
+        <View style={{
+            width: (width - 3 * theme.spacing.md) / 2,
+            padding: theme.spacing.sm }}>
+            <TouchableOpacity style={ styles.content } onPress={ onPress }>
                 <AppText style={{ fontFamily: theme.fonts.bold }}>{ front }</AppText>
                 <AppText>{ back }</AppText>
             </TouchableOpacity>
@@ -20,12 +26,9 @@ export default function CardItem({ front, back }: Props) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-
-        padding: theme.spacing.sm
-    },
     content: {
+        minHeight: 80,
+        
         backgroundColor: theme.colors.bgLight,
 
         borderRadius: 10,

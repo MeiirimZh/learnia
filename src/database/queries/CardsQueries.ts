@@ -14,6 +14,12 @@ export const INSERT = `
     (?, ?, ?);
 `;
 
+export const UPDATE = `
+    UPDATE cards
+    SET front = ?, back = ?
+    WHERE id = ?;
+`;
+
 export const DROP_TABLE = `
     DROP TABLE IF EXISTS cards;
 `;

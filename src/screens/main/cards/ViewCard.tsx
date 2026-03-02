@@ -25,15 +25,24 @@ export default function ViewCard({ navigation, route }: Props) {
     const cardId = route.params?.cardId ?? null;
     const setId = route.params?.setId ?? null;
 
-    const [ height, setHeight ] = useState<number>(LINE_HEIGHT);
-    const [ front, setFront ] = useState<string>("");
-    const [ back, setBack ] = useState<string>("");
+    const [ frontHeight, setFrontHeight ] = useState<number>(LINE_HEIGHT);
+    const [ backHeight, setBackHeight ] = useState<number>(LINE_HEIGHT);
+    const [ front, setFront ] = useState<string>(route.params?.front ?? "");
+    const [ back, setBack ] = useState<string>(route.params?.back ?? "");
 
     const addCard = async () => {
         await db.runAsync(CardsQueries.INSERT, [
             front,
             back,
             setId
+        ]);
+    };
+
+    const updateCard = async () => {
+        await db.runAsync(CardsQueries.UPDATE, [
+            front,
+            back,
+            cardId
         ]);
     };
 
@@ -45,7 +54,7 @@ export default function ViewCard({ navigation, route }: Props) {
                     style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
                     onPress={async () => {
                         if (cardId) {
-
+                            await updateCard();
                         }
                         else {
                             await addCard();
@@ -63,25 +72,25 @@ export default function ViewCard({ navigation, route }: Props) {
         <View style={ styles.container }>
             <TextInput
                 multiline
-                scrollEnabled={ height >= MAX_HEIGHT }
+                scrollEnabled={ frontHeight >= MAX_HEIGHT }
                 onContentSizeChange={(e) => {
                     const contentHeight = e.nativeEvent.contentSize.height;
-                    setHeight(Math.min(contentHeight, MAX_HEIGHT));
+                    setFrontHeight(Math.min(contentHeight, MAX_HEIGHT));
                 }}
                 textAlignVertical="top"
-                style={ [styles.textInput, { height }] }
+                style={ [styles.textInput, { height: frontHeight }] }
                 value={ front }
                 onChangeText={ setFront }
                 placeholder="Термин" />
             <TextInput
                 multiline
-                scrollEnabled={ height >= MAX_HEIGHT }
+                scrollEnabled={ backHeight >= MAX_HEIGHT }
                 onContentSizeChange={(e) => {
                     const contentHeight = e.nativeEvent.contentSize.height;
-                    setHeight(Math.min(contentHeight, MAX_HEIGHT));
+                    setBackHeight(Math.min(contentHeight, MAX_HEIGHT));
                 }}
                 textAlignVertical="top"
-                style={ [styles.textInput, { height }] }
+                style={ [styles.textInput, { height: backHeight }] }
                 value={ back }
                 onChangeText={ setBack }
                 placeholder="Определение"

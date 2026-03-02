@@ -32,7 +32,10 @@ export default function ViewSet({ navigation, route }: Props) {
                 numColumns={ 2 } 
                 columnWrapperStyle={{ gap: theme.spacing.md }}
                 renderItem={({ item }) => (
-                    <CardItem front={ item.front } back={ item.back } />
+                    <CardItem 
+                        front={ item.front }
+                        back={ item.back }
+                        onPress={ () => navigation.navigate("ViewCard", { cardId: item.id, front: item.front, back: item.back }) } />
                 )}/>
 
             <FloatingActions>

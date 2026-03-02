@@ -27,6 +27,8 @@ export type SetsStackParamList = {
     },
     ViewCard: {
         cardId?: number,
-        setId?: number
+        setId?: number,
+        front?: string,
+        back?: string
     } | undefined,
 };
