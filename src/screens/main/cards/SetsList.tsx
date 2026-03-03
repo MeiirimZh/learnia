@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -17,6 +17,7 @@ import FloatingActionsButton from '../../../../components/buttons/FloatingAction
 import SetItem from "../../../../components/items/SetItem";
 import CategoryItem from "../../../../components/items/CategoryItem";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 
 import { theme } from "../../../theme";
 
@@ -39,20 +40,74 @@ export default function SetsList({ navigation }: Props) {
     const [ isSetModalVisible, setIsSetModalVisible ] = useState<boolean>(false);
     const [ isChoiceModalVisible, setIsChoiceModalVisible ] = useState<boolean>(false);
 
+    const [ id, setId ] = useState<number | null>(null);
     const [ title, setTitle ] = useState<string>("");
-    const [ version, setVersion ] = useState<string>("1.0");
+    const [ version, setVersion ] = useState<string>("");
     const [ categoryId, setCategoryId ] = useState<number>(1);
     const [ selectedCategory, setSelectedCategory ] = useState<string>("Нет");
 
+    useEffect(() => {
+        const category = categories.find(
+            (category) => category.id === categoryId
+        );
+        const categoryName = category?.name ?? "Нет";  
+
+        setSelectedCategory(categoryName);
+    }, [categoryId]);
+
+    const reset = () => {
+        closeAllModals();
+        setId(null);
+        setTitle("");
+        setVersion("");
+        setCategoryId(1);
+    };
+
+    const showInvalidTitleToast = () => {
+        Toast.show({
+            type: 'error',
+            text1: '⚠️ Ошибка!',
+            text2: 'Вы не заполнили название'
+        });
+    };
+
     const createSet = async () => {
+        if (!title) {
+            showInvalidTitleToast();
+            return;
+        };
+
+        let setVersion = version ? version : "1.0";
+
         await db.runAsync(SetsQueries.INSERT, [
             title,
             getTodayFormatted(),
-            version,
+            setVersion,
             categoryId
         ]);
 
         await loadSets();
+
+        reset();
+    };
+
+    const updateSet = async () => {
+        if (!title) {
+            showInvalidTitleToast();
+            return;
+        }
+
+        await db.runAsync(SetsQueries.UPDATE, [
+            title,
+            getTodayFormatted(),
+            version,
+            categoryId,
+            id
+        ]);
+
+        await loadSets();
+
+        reset();
     };
 
     const closeAllModals = () => {
@@ -84,7 +139,14 @@ export default function SetsList({ navigation }: Props) {
                             onPressMain={() => navigation.navigate("ViewSet", { set: item })}
                             onPressReview={() => {}}
                             onPressPractice={() => {}}
-                            onPressEdit={() => {}}
+                            onOptionsPress={() => {
+                                setId(item.id);
+                                setTitle(item.title);
+                                setVersion(item.version);
+                                setCategoryId(item.category_id);
+
+                                setIsSetModalVisible(true);
+                            }}
                             onPressShare={() => {}} />
                     )
                 }}
@@ -96,8 +158,7 @@ export default function SetsList({ navigation }: Props) {
             </FloatingActions>
 
             <AppModal visible={ isSetModalVisible } onPress={() => {
-                setSelectedCategory("Нет");
-                setIsSetModalVisible(false);
+                reset()
             }} >
                 <ScrollView contentContainerStyle={ styles.modal }>
                     <View style={ styles.form }>
@@ -108,6 +169,8 @@ export default function SetsList({ navigation }: Props) {
                             placeholder="Название" />
                         <TextInput
                             style={ [ styles.textInput, styles.shadow ] }
+                            value={ version }
+                            onChangeText={ setVersion }
                             placeholder="Версия (необязательно)" />
                     </View>
                     <TouchableOpacity onPress={() => setIsChoiceModalVisible(true)}>
@@ -120,10 +183,14 @@ export default function SetsList({ navigation }: Props) {
                     <TouchableOpacity 
                         style={ [ styles.createButton, styles.shadow ] }
                         onPress={() => {
-                            createSet();
-                            closeAllModals();
+                            if (id) {
+                                updateSet();
+                            }
+                            else {
+                                createSet();
+                            }
                         }}>
-                        <AppText style={{ color: theme.colors.onPrimary }}>Создать набор</AppText>
+                        <AppText style={{ color: theme.colors.onPrimary }}>{ id ? "Изменить набор" : "Создать набор" }</AppText>
                     </TouchableOpacity>
                 </ScrollView>
             </AppModal>

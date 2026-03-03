@@ -11,7 +11,7 @@ type Props = {
     onPressMain: () => void;
     onPressReview: () => void;
     onPressPractice: () => void;
-    onPressEdit: () => void;
+    onOptionsPress: () => void;
     onPressShare: () => void;
 };
 
@@ -22,7 +22,7 @@ export default function SetItem({
     onPressMain, 
     onPressReview, 
     onPressPractice ,
-    onPressEdit,
+    onOptionsPress,
     onPressShare
 }: Props) {
     return (
@@ -40,7 +40,7 @@ export default function SetItem({
                             </AppText>
                         </View>
 
-                        <TouchableOpacity style={ styles.sideButton }>
+                        <TouchableOpacity style={ styles.sideButton } onPress={ onOptionsPress }>
                             <Ionicons name="ellipsis-vertical" size={ 24 } />
                         </TouchableOpacity>
                     </View>
