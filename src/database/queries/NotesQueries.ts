@@ -24,6 +24,11 @@ export const UPDATE_TITLE = `
     WHERE id = ?;
 `;
 
+export const DELETE = `
+    DELETE FROM notes
+    WHERE id = ?;
+`;
+
 export const DROP_TABLE = `
     DROP TABLE IF EXISTS notes;
 `;

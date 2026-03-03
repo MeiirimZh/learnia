@@ -1,8 +1,12 @@
-import useNotes from "../../../hooks/useNotes";
+import { useState, useEffect } from "react";
+import { BackHandler } from "react-native";
 
-import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
-import AppText from "../../../../components/AppText";
-import Note from "../../../../components/Note";
+import { useSQLiteContext } from "expo-sqlite";
+import useNotes from "../../../hooks/useNotes";
+import * as NotesQueries from "../../../database/queries/NotesQueries";
+
+import { StyleSheet, View, FlatList } from "react-native";
+import NoteItem from "../../../../components/items/NoteItem";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { NotesStackParamList } from "../../../navigation/types";
@@ -19,7 +23,35 @@ import { getFormattedMonthDayFromDateString } from "../../../utils/date";
 type Props = StackScreenProps<NotesStackParamList, "NotesList">;
 
 export default function NotesList({ navigation }: Props) {
-    const { notes } = useNotes();
+    const db = useSQLiteContext();
+    const { notes, loadNotes } = useNotes();
+
+    const [ isDeleteMode, setIsDeleteMode ] = useState<boolean>(false);
+    const [ notesToDelete, setNotesToDelete ] = useState<number[]>([]);
+
+    useEffect(() => {
+        const onBackPress = () => {
+            if (isDeleteMode) {
+                setIsDeleteMode(false);
+                setNotesToDelete([]);
+                return true;
+            }
+
+            return false;
+        };
+
+        const subscription = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+        return () => subscription.remove();
+    }, [isDeleteMode]);
+
+    const deleteNote = async (id: number) => {
+        await db.runAsync(NotesQueries.DELETE, [
+            id
+        ]);
+
+        await loadNotes();
+    };
 
     return (
         <View style={ styles.container }>
@@ -27,22 +59,59 @@ export default function NotesList({ navigation }: Props) {
                 data={ notes } 
                 numColumns={ 2 } 
                 columnWrapperStyle={{gap: theme.spacing.md}}
-                renderItem={({item}) => (
-                    <Note 
-                        title={ item.title } 
-                        content={ item.content }
-                        date={ getFormattedMonthDayFromDateString(item.creation_date) }
-                        onPress={ () => navigation.navigate("ViewNote", { note: item, isReadMode: true }) } />
-                )}
+                renderItem={({item}) => {
+                    const deleteSelected = notesToDelete.includes(item.id);
+                    
+                    return (
+                        <NoteItem 
+                            title={ item.title } 
+                            content={ item.content }
+                            date={ getFormattedMonthDayFromDateString(item.creation_date) }
+                            showDeleteMarker={ isDeleteMode }
+                            deleteSelected={ deleteSelected }
+                            onPress={ () => navigation.navigate("ViewNote", { note: item, isReadMode: true }) }
+                            onLongPress={ () => {
+                                if (isDeleteMode) {
+                                    setNotesToDelete([]);
+                                    setIsDeleteMode(false);
+                                }
+                                else {
+                                    setNotesToDelete(prev => [...prev, item.id]);
+                                    setIsDeleteMode(true);
+                                }
+                            } }
+                            onDeletePress={ () => {
+                                if (notesToDelete.includes(item.id)) {
+                                    setNotesToDelete(prev => 
+                                        prev.filter(id => id !== item.id)
+                                    );
+                                }
+                                else {
+                                    setNotesToDelete(prev => [...prev, item.id]);
+                                }
+                            } } />
+                    )
+                }}
                 ItemSeparatorComponent={() => <View style={{ height: theme.spacing.md }} />}
                 showsVerticalScrollIndicator={ false } />
 
             <FloatingActions>
-                <FloatingActionsButton name='add' color={ theme.colors.text } onPress={() => navigation.navigate("ViewNote", { isReadMode: false })} />
+                { isDeleteMode ?
+                    <FloatingActionsButton name='trash' color={ theme.colors.text } onPress={async () => {
+                        await Promise.all(
+                            notesToDelete.map(id => deleteNote(id))
+                        );
+                        setNotesToDelete([]);
+                        setIsDeleteMode(false);
+                    }} /> :
+                    <>
+                    <FloatingActionsButton name='add' color={ theme.colors.text } onPress={() => navigation.navigate("ViewNote", { isReadMode: false })} />
 
-                <GradientBorderButton onPress={() => {}} colors={ theme.colors.gradientPrimary } width={ 56 } height={ 56 }>
-                    <Ionicons name="sparkles" size={ 24} />
-                </GradientBorderButton>
+                    <GradientBorderButton onPress={() => {}} colors={ theme.colors.gradientPrimary } width={ 56 } height={ 56 }>
+                        <Ionicons name="sparkles" size={ 24} />
+                    </GradientBorderButton>
+                    </>
+                }
             </FloatingActions>
         </View>
     )

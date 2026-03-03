@@ -28,7 +28,7 @@ const useNotes = () => {
         }, [])
     );
 
-    return { notes, setNotes, loading };
+    return { notes, setNotes, loading, loadNotes };
 };
 
 export default useNotes;
