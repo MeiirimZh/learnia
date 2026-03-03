@@ -20,6 +20,11 @@ export const UPDATE = `
     WHERE id = ?;
 `;
 
+export const DELETE = `
+    DELETE FROM cards
+    WHERE id = ?;
+`;
+
 export const DROP_TABLE = `
     DROP TABLE IF EXISTS cards;
 `;
