@@ -69,7 +69,21 @@ export default function NotesList({ navigation }: Props) {
                             date={ getFormattedMonthDayFromDateString(item.creation_date) }
                             showDeleteMarker={ isDeleteMode }
                             deleteSelected={ deleteSelected }
-                            onPress={ () => navigation.navigate("ViewNote", { note: item, isReadMode: true }) }
+                            onPress={ () => {
+                                if (isDeleteMode) {
+                                    if (notesToDelete.includes(item.id)) {
+                                        setNotesToDelete(prev => 
+                                            prev.filter(id => id !== item.id)
+                                        );
+                                    }
+                                    else {
+                                        setNotesToDelete(prev => [...prev, item.id]);
+                                    }
+                                }
+                                else {
+                                    navigation.navigate("ViewNote", { note: item, isReadMode: true })
+                                }
+                            }}
                             onLongPress={ () => {
                                 if (isDeleteMode) {
                                     setNotesToDelete([]);
@@ -79,17 +93,7 @@ export default function NotesList({ navigation }: Props) {
                                     setNotesToDelete(prev => [...prev, item.id]);
                                     setIsDeleteMode(true);
                                 }
-                            } }
-                            onDeletePress={ () => {
-                                if (notesToDelete.includes(item.id)) {
-                                    setNotesToDelete(prev => 
-                                        prev.filter(id => id !== item.id)
-                                    );
-                                }
-                                else {
-                                    setNotesToDelete(prev => [...prev, item.id]);
-                                }
-                            } } />
+                            }} />
                     )
                 }}
                 ItemSeparatorComponent={() => <View style={{ height: theme.spacing.md }} />}

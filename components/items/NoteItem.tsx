@@ -12,7 +12,6 @@ type Props = {
     deleteSelected: boolean;
     onPress: () => void;
     onLongPress: () => void;
-    onDeletePress: () => void;
 };
 
 export default function NoteItem({ 
@@ -23,7 +22,6 @@ export default function NoteItem({
     deleteSelected, 
     onPress, 
     onLongPress,
-    onDeletePress
  }: Props) {
     const { width } = useWindowDimensions();
 
@@ -32,6 +30,15 @@ export default function NoteItem({
             <View style={ {gap: theme.spacing.md } } >
                 <TouchableOpacity style={ styles.content } onPress={ onPress } onLongPress={ onLongPress } >
                     <AppText style= { styles.text } >{ content }</AppText>
+
+                    {
+                        showDeleteMarker && 
+                        <Ionicons
+                            style={{ position: 'absolute', top: 5, left: 5 }}
+                            name={ deleteSelected ? "checkmark-circle" : "ellipse-outline" }
+                            size={ 24 }
+                            color={ deleteSelected ? theme.colors.danger : theme.colors.text } />
+                    }
                 </TouchableOpacity>
 
                 <View style={ styles.desc }>
@@ -43,26 +50,6 @@ export default function NoteItem({
                         <AppText numberOfLines={ 1 } style={ [styles.text, styles.dateText] }>{ date }</AppText>
                     </View>
                 </View>
-                
-                {
-                    showDeleteMarker && 
-                        <TouchableOpacity 
-                            style={{ 
-                            position: 'absolute', 
-                            top: 5, 
-                            left: 5,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: 30,
-                            height: 30 }}
-                            onPress={ onDeletePress }>
-                            <Ionicons 
-                                name={ deleteSelected ? "checkmark-circle" : "ellipse-outline" }
-                                size={ 24 }
-                                color={ deleteSelected ? theme.colors.danger : theme.colors.text } />
-                        </TouchableOpacity>
-                    
-                }
             </View>
         </View>
     )
