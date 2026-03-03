@@ -87,7 +87,6 @@ export default function SetsList({ navigation }: Props) {
         ]);
 
         await loadSets();
-
         reset();
     };
 
@@ -106,7 +105,15 @@ export default function SetsList({ navigation }: Props) {
         ]);
 
         await loadSets();
+        reset();
+    };
 
+    const deleteSet = async () => {
+        await db.runAsync(SetsQueries.DELETE, [
+            id
+        ]);
+
+        await loadSets();
         reset();
     };
 
@@ -180,18 +187,28 @@ export default function SetsList({ navigation }: Props) {
                         </View>
                         <AppText numberOfLines={ 4 }>{ selectedCategory }</AppText>
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                        style={ [ styles.createButton, styles.shadow ] }
-                        onPress={() => {
-                            if (id) {
-                                updateSet();
-                            }
-                            else {
-                                createSet();
-                            }
-                        }}>
-                        <AppText style={{ color: theme.colors.onPrimary }}>{ id ? "Изменить набор" : "Создать набор" }</AppText>
-                    </TouchableOpacity>
+                    <View style={ styles.form }>
+                        <TouchableOpacity 
+                            style={ [ styles.createButton, styles.shadow, { backgroundColor: theme.colors.primary } ] }
+                            onPress={() => {
+                                if (id) {
+                                    updateSet();
+                                }
+                                else {
+                                    createSet();
+                                }
+                            }}>
+                            <AppText style={{ color: theme.colors.onPrimary }}>{ id ? "Изменить набор" : "Создать набор" }</AppText>
+                        </TouchableOpacity>
+                        {
+                            id &&
+                            <TouchableOpacity
+                                style={ [ styles.createButton, styles.shadow, { backgroundColor: theme.colors.danger } ] }
+                                onPress={() => deleteSet()}>
+                                <AppText style={{ color: theme.colors.onPrimary }}>Удалить набор</AppText>
+                            </TouchableOpacity>
+                        }
+                    </View>
                 </ScrollView>
             </AppModal>
 
@@ -287,8 +304,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
 
         borderRadius: 10,
-
-        backgroundColor: theme.colors.primary,
 
         padding: theme.spacing.md
     },

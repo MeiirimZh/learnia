@@ -21,6 +21,11 @@ export const UPDATE = `
     WHERE id = ?;
 `;
 
+export const DELETE = `
+    DELETE FROM sets
+    WHERE id = ?;
+`;
+
 export const DROP_TABLE = `
     DROP TABLE IF EXISTS sets;
 `;
