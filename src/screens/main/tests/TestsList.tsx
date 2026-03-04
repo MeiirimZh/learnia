@@ -100,6 +100,33 @@ export default function TestsList({ navigation }: Props) {
         reset();
     };
 
+    const updateTest = async () => {
+        if (!title) {
+            showInvalidTitleToast();
+            return;
+        };
+
+        await db.runAsync(TestsQueries.UPDATE, [
+            title,
+            getTodayFormatted(),
+            version,
+            categoryId,
+            id
+        ]);
+
+        await loadTests();
+        reset();
+    };
+
+    const deleteTest = async () => {
+        await db.runAsync(TestsQueries.DELETE, [
+            id
+        ]);
+
+        await loadTests();
+        reset();
+    };
+
     return (
         <View style={ styles.container }>
             <FlatList
@@ -118,7 +145,14 @@ export default function TestsList({ navigation }: Props) {
                             lastResult={ 30 }
                             onPressMain={() => {}}
                             onPressStart={() => {}}
-                            onOptionsPress={() => {}}
+                            onOptionsPress={() => {
+                                setId(item.id);
+                                setTitle(item.title);
+                                setVersion(item.version);
+                                setCategoryId(item.category_id);
+
+                                setIsTestModalVisible(true);
+                            }}
                             onPressShare={() => {}} />
                     )  
                 }}
@@ -159,7 +193,7 @@ export default function TestsList({ navigation }: Props) {
                             style={ [ styles.createButton, styles.shadow, { backgroundColor: theme.colors.primary } ] }
                             onPress={() => {
                                 if (id) {
-                                    // updateSet();
+                                    updateTest();
                                 }
                                 else {
                                     createTest();
@@ -171,7 +205,7 @@ export default function TestsList({ navigation }: Props) {
                             id &&
                             <TouchableOpacity
                                 style={ [ styles.createButton, styles.shadow, { backgroundColor: theme.colors.danger } ] }
-                                onPress={() => {}}>
+                                onPress={() => deleteTest()}>
                                 <AppText style={{ color: theme.colors.onPrimary }}>Удалить набор</AppText>
                             </TouchableOpacity>
                         }

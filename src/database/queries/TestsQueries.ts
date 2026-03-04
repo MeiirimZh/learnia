@@ -15,6 +15,17 @@ export const INSERT = `
     (?, ?, ?, ?);
 `;
 
+export const UPDATE = `
+    UPDATE tests
+    SET title = ?, creation_date = ?, version = ?, category_id = ?
+    WHERE id = ?;
+`;
+
+export const DELETE = `
+    DELETE FROM tests
+    WHERE id = ?;
+`;
+
 export const DROP_TABLE = `
     DROP TABLE IF EXISTS tests;
 `;
