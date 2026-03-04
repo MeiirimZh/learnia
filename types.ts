@@ -27,6 +27,14 @@ export type Card = {
     set_id: number
 };
 
+export type Test = {
+    id: number,
+    title: string,
+    creation_date: string,
+    version: string,
+    category_id: number
+};
+
 export type TabParamList = {
     Notes: undefined;
     Cards: undefined;

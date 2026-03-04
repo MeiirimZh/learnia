@@ -32,3 +32,8 @@ export type SetsStackParamList = {
         back?: string
     } | undefined,
 };
+
+export type TestsStackParamList = {
+    TestsList: undefined,
+    ViewTest: undefined
+};

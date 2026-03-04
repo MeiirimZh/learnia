@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import AppText from "../AppText";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -7,21 +7,21 @@ import { theme } from "../../src/theme";
 type Props = {
     title: string;
     color: string;
-    totalCardsCount: number;
+    totalQuestionsCount: number;
+    lastResult: number;
     onPressMain: () => void;
-    onPressReview: () => void;
-    onPressPractice: () => void;
+    onPressStart: () => void;
     onOptionsPress: () => void;
     onPressShare: () => void;
 };
 
-export default function SetItem({
+export default function TestItem({
     title,
     color,
-    totalCardsCount, 
-    onPressMain, 
-    onPressReview, 
-    onPressPractice ,
+    totalQuestionsCount,
+    lastResult,
+    onPressMain,
+    onPressStart,
     onOptionsPress,
     onPressShare
 }: Props) {
@@ -38,24 +38,25 @@ export default function SetItem({
                                     { title }
                             </AppText>
                         </View>
-
+                
                         <TouchableOpacity style={ styles.sideButton } onPress={ onOptionsPress }>
                             <Ionicons name="ellipsis-vertical" size={ 24 } />
                         </TouchableOpacity>
                     </View>
                     <AppText 
+                        style={{ color: theme.colors.textMuted }}
+                        numberOfLines={ 1 }>
+                        { `Количество вопросов: ${ totalQuestionsCount }` }
+                    </AppText>
+                    <AppText 
                         style={{ color: theme.colors.textMuted, marginBottom: theme.spacing.md }}
                         numberOfLines={ 1 }>
-                        { `Количество карточек: ${ totalCardsCount }` }
+                        { `Последний результат: ${ lastResult }%` }
                     </AppText>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View style={{ flexDirection: 'row', gap: theme.spacing.md }}>
                             <TouchableOpacity style={ styles.studyButton }>
-                                <AppText style={{ fontSize: 12, color: theme.colors.primary }}>ОБЗОР</AppText>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={ styles.studyButton }>
-                                <AppText style={{ fontSize: 12, color: theme.colors.primary }}>ПРАКТИКА</AppText>
+                                <AppText style={{ fontSize: 12, color: theme.colors.primary }}>НАЧАТЬ</AppText>
                             </TouchableOpacity>
                         </View>
 
@@ -63,7 +64,7 @@ export default function SetItem({
                             <Ionicons name="share-social" size={ 24 } />
                         </TouchableOpacity>
                     </View>
-                </View>
+                    </View>
             </TouchableOpacity>
         </View>
     )
