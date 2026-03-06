@@ -35,6 +35,20 @@ export type Test = {
     category_id: number
 };
 
+export type Question = {
+    id: number,
+    question: string,
+    right_answer_1 : string,
+    right_answer_2 : string,
+    right_answer_3 : string,
+    right_answer_4 : string,
+    answer_1: string,
+    answer_2: string,
+    answer_3: string,
+    answer_4: string,
+    test_id: number
+};
+
 export type TabParamList = {
     Notes: undefined;
     Cards: undefined;

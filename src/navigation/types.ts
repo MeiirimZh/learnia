@@ -1,4 +1,4 @@
-import { Note, Category, Set } from "../../types";
+import { Note, Category, Set, Test } from "../../types";
 
 export type RootStackParamList = {
     MainTabs: undefined,
@@ -35,5 +35,10 @@ export type SetsStackParamList = {
 
 export type TestsStackParamList = {
     TestsList: undefined,
-    ViewTest: undefined
+    ViewTest: {
+        test: Test
+    },
+    ViewQuestion: {
+        testId?: number
+    } | undefined
 };

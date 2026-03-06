@@ -22,6 +22,11 @@ export const INSERT = `
     (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 `;
 
+export const DELETE = `
+    DELETE FROM questions
+    WHERE id = ?;
+`;
+
 export const DROP_TABLE = `
     DROP TABLE IF EXISTS questions;
 `;

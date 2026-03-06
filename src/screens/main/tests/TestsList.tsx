@@ -143,7 +143,9 @@ export default function TestsList({ navigation }: Props) {
                             color={ color }
                             totalQuestionsCount={ 10 }
                             lastResult={ 30 }
-                            onPressMain={() => {}}
+                            onPressMain={() => {
+                                navigation.navigate("ViewTest", { test: item })
+                            }}
                             onPressStart={() => {}}
                             onOptionsPress={() => {
                                 setId(item.id);
