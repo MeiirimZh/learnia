@@ -1,5 +1,7 @@
 const colors: {
     primary: string,
+    secondary: string,
+
     onPrimary: string,
 
     bgLight: string,
@@ -17,6 +19,8 @@ const colors: {
     gradientPrimary: [string, string, ...string[]];
 } = {
     primary: 'hsla(210, 100%, 50%, 1.0)',
+    secondary: 'hsla(36, 100%, 50%, 1.0)',
+
     onPrimary: 'hsla(0, 0%, 95%, 1.0)',
 
     bgLight: 'hsla(0, 0%, 100%, 1.0)',
