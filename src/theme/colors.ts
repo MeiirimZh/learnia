@@ -9,6 +9,7 @@ const colors: {
     text: string,
     textMuted: string,
 
+    success: string,
     danger: string,
 
     shadow: string,
@@ -27,6 +28,7 @@ const colors: {
 
     shadow: 'hsla(0, 0%, 0%, 1.0)',
 
+    success: 'hsl(118, 64%, 49%)',
     danger: 'hsla(15, 100%, 50%, 1.0)',
 
     gradientPrimary: ['hsla(46, 100%, 50%, 1.0)', 'hsla(20, 100%, 50%, 1.0)']

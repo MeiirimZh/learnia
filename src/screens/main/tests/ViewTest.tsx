@@ -8,7 +8,9 @@ import { useSQLiteContext } from "expo-sqlite";
 import useQuestions from "../../../hooks/useQuestions";
 import * as QuestionsQueries from "../../../database/queries/QuestionsQueries";
 
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, FlatList, Text } from "react-native";
+import AppText from "../../../../components/AppText";
+import QuestionItem from "../../../../components/items/QuestionItem";
 import FloatingActions from "../../../../components/menus/FloatingActions";
 import FloatingActionsButton from "../../../../components/buttons/FloatingActionsButton";
 
@@ -19,7 +21,7 @@ type Props = StackScreenProps<TestsStackParamList, "ViewTest">;
 export default function ViewTest({ navigation, route }: Props) {
     const db = useSQLiteContext();
     const { test } = route.params;
-    const { questions, loadQuestions } = useQuestions();
+    const { questions, loadQuestions } = useQuestions(test.id);
 
     const [ isDeleteMode, setIsDeleteMode ] = useState<boolean>(false);
     const [ questionsToDelete, setQuestionsToDelete ] = useState<number[]>([]);
@@ -56,7 +58,11 @@ export default function ViewTest({ navigation, route }: Props) {
 
     return (
         <View style={ styles.container }>
-            <Text>Просмотр теста</Text>
+            <FlatList
+                data={ questions }
+                renderItem={({ item, index }) => (
+                    <QuestionItem question={ item.question } number={ index + 1 } onPressMain={ () => {} } />
+                )} />
 
             <FloatingActions>
                 { isDeleteMode ?

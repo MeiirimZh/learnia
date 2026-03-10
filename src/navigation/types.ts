@@ -39,6 +39,7 @@ export type TestsStackParamList = {
         test: Test
     },
     ViewQuestion: {
+        questionId?: number,
         testId?: number
     } | undefined
 };

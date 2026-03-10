@@ -2,10 +2,10 @@ export const CREATE_TABLE = `
     CREATE TABLE IF NOT EXISTS questions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         question TEXT NOT NULL,
-        right_answer_1 INTEGER NOT NULL,
-        right_answer_2 INTEGER NOT NULL,
-        right_answer_3 INTEGER NOT NULL,
-        right_answer_4 INTEGER NOT NULL,
+        is_answer_1_correct BOOL NOT NULL,
+        is_answer_2_correct BOOL NOT NULL,
+        is_answer_3_correct BOOL NOT NULL,
+        is_answer_4_correct BOOL NOT NULL,
         answer_1 TEXT NOT NULL,
         answer_2 TEXT NOT NULL,
         answer_3 TEXT NOT NULL,
@@ -17,7 +17,7 @@ export const CREATE_TABLE = `
 `;
 
 export const INSERT = `
-    INSERT INTO questions (question, right_answer_1, right_answer_2, right_answer_3, right_answer_4, answer_1, answer_2, answer_3, answer_4, test_id)
+    INSERT INTO questions (question, is_answer_1_correct, is_answer_2_correct, is_answer_3_correct, is_answer_4_correct, answer_1, answer_2, answer_3, answer_4, test_id)
     VALUES
     (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 `;
