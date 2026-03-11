@@ -60,20 +60,53 @@ export default function ViewTest({ navigation, route }: Props) {
         <View style={ styles.container }>
             <FlatList
                 data={ questions }
-                renderItem={({ item, index }) => (
-                    <QuestionItem question={ item.question } number={ index + 1 } onPressMain={ () => navigation.navigate("ViewQuestion", { 
-                        questionId: item.id, 
-                        question: item.question,
-                        is_answer_1_correct: item.is_answer_1_correct,
-                        is_answer_2_correct: item.is_answer_2_correct,
-                        is_answer_3_correct: item.is_answer_3_correct,
-                        is_answer_4_correct: item.is_answer_4_correct,
-                        answer_1: item.answer_1,
-                        answer_2: item.answer_2,
-                        answer_3: item.answer_3,
-                        answer_4: item.answer_4
-                    }) } />
-                )} />
+                renderItem={({ item, index }) => {
+                    const deleteSelected = questionsToDelete.includes(item.id);
+
+                    return ( 
+                        <QuestionItem 
+                            question={ item.question }
+                            number={ index + 1 }
+                            showDeleteMarker={ isDeleteMode }
+                            deleteSelected={ deleteSelected }
+                            onPress={ () => {
+                                if (isDeleteMode) {
+                                    if (questionsToDelete.includes(item.id)) {
+                                        setQuestionsToDelete(prev => 
+                                            prev.filter(id => id !== item.id)
+                                        );
+                                    }
+                                    else {
+                                        setQuestionsToDelete(prev => [...prev, item.id]);
+                                    }
+                                }
+                                else {
+                                    navigation.navigate("ViewQuestion", { 
+                                        questionId: item.id, 
+                                        question: item.question,
+                                        is_answer_1_correct: item.is_answer_1_correct,
+                                        is_answer_2_correct: item.is_answer_2_correct,
+                                        is_answer_3_correct: item.is_answer_3_correct,
+                                        is_answer_4_correct: item.is_answer_4_correct,
+                                        answer_1: item.answer_1,
+                                        answer_2: item.answer_2,
+                                        answer_3: item.answer_3,
+                                        answer_4: item.answer_4
+                                    })
+                                }
+                            }}
+                            onLongPress={() => {
+                                if (isDeleteMode) {
+                                    setQuestionsToDelete([]);
+                                    setIsDeleteMode(false);
+                                }
+                                else {
+                                    setQuestionsToDelete(prev => [...prev, item.id]);
+                                    setIsDeleteMode(true);
+                                }
+                            }} />
+                    )
+                }}/>
 
             <FloatingActions>
                 { isDeleteMode ?
