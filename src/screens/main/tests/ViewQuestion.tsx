@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { TestsStackParamList } from "../../../navigation/types";
@@ -27,35 +27,66 @@ export default function ViewQuestion({ navigation, route }: Props) {
     const testId = route.params?.testId ?? null;
 
     const [ questionHeight, setQuestionHeight ] = useState<number>(LINE_HEIGHT);
-    const [ question, setQuestion ] = useState<string>("");
-    const [ answer1, setAnswer1 ] = useState<string>("");
-    const [ answer2, setAnswer2 ] = useState<string>("");
-    const [ answer3, setAnswer3 ] = useState<string>("");
-    const [ answer4, setAnswer4 ] = useState<string>("");
+    const [ question, setQuestion ] = useState<string>(route.params?.question ?? "");
+    const [ answer1, setAnswer1 ] = useState<string>(route.params?.answer_1 ?? "");
+    const [ answer2, setAnswer2 ] = useState<string>(route.params?.answer_2 ?? "");
+    const [ answer3, setAnswer3 ] = useState<string>(route.params?.answer_3 ?? "");
+    const [ answer4, setAnswer4 ] = useState<string>(route.params?.answer_4 ?? "");
     const [ numbersOfCorrectAnswers, setNumbersOfCorrectAnswers ] = useState<number[]>([]);
+
+    useEffect(() => {
+        if (questionId) {
+            const arr = [route.params?.is_answer_1_correct, route.params?.is_answer_2_correct, route.params?.is_answer_3_correct, route.params?.is_answer_4_correct];
+            arr.forEach((element, index) => {
+                if (element) setNumbersOfCorrectAnswers(prev => [...prev, index + 1]);
+            });
+        }
+    }, []);
+
+    const showToast = () => {
+        Toast.show({
+            type: 'error',
+            text1: '⚠️ Ошибка!',
+            text2: 'Выберите минимум один правильный вариант ответа'
+        });
+    };
 
     const addQuestion = async () => {
         if (numbersOfCorrectAnswers.length === 0) {
             throw "numbersOfCorrectAnswers is empty";
         };
 
-        try {
-            await db.runAsync(QuestionsQueries.INSERT, [
-                question,
-                numbersOfCorrectAnswers.includes(1),
-                numbersOfCorrectAnswers.includes(2),
-                numbersOfCorrectAnswers.includes(3),
-                numbersOfCorrectAnswers.includes(4),
-                answer1,
-                answer2,
-                answer3,
-                answer4,
-                testId
-            ]);
-        }
-        catch (error) {
-            console.log(error);
-        }
+        await db.runAsync(QuestionsQueries.INSERT, [
+            question,
+            numbersOfCorrectAnswers.includes(1),
+            numbersOfCorrectAnswers.includes(2),
+            numbersOfCorrectAnswers.includes(3),
+            numbersOfCorrectAnswers.includes(4),
+            answer1,
+            answer2,
+            answer3,
+            answer4,
+            testId
+        ]);
+    };
+
+    const updateQuestion = async () => {
+        if (numbersOfCorrectAnswers.length === 0) {
+            throw "numbersOfCorrectAnswers is empty";
+        };
+
+        await db.runAsync(QuestionsQueries.UPDATE, [
+            question,
+            numbersOfCorrectAnswers.includes(1),
+            numbersOfCorrectAnswers.includes(2),
+            numbersOfCorrectAnswers.includes(3),
+            numbersOfCorrectAnswers.includes(4),
+            answer1,
+            answer2,
+            answer3,
+            answer4,
+            questionId
+        ]);
     };
 
     useLayoutEffect(() => {
@@ -66,7 +97,13 @@ export default function ViewQuestion({ navigation, route }: Props) {
                     style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
                     onPress={async () => {
                         if (questionId) {
-
+                            try {
+                                await updateQuestion();
+                                navigation.goBack();
+                            }
+                            catch (error) {
+                                showToast();
+                            }
                         }
                         else {
                             try {
@@ -74,11 +111,7 @@ export default function ViewQuestion({ navigation, route }: Props) {
                                 navigation.goBack();
                             }
                             catch (error) {
-                                Toast.show({
-                                    type: 'error',
-                                    text1: '⚠️ Ошибка!',
-                                    text2: 'Выберите минимум один правильный вариант ответа'
-                                });
+                                showToast();
                             }
                         }
                     }}>

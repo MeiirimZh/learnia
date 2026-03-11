@@ -40,6 +40,15 @@ export type TestsStackParamList = {
     },
     ViewQuestion: {
         questionId?: number,
-        testId?: number
+        testId?: number,
+        question?: string,
+        is_answer_1_correct?: boolean,
+        is_answer_2_correct?: boolean,
+        is_answer_3_correct?: boolean,
+        is_answer_4_correct?: boolean,
+        answer_1?: string,
+        answer_2?: string,
+        answer_3?: string,
+        answer_4?: string,
     } | undefined
 };

@@ -22,6 +22,12 @@ export const INSERT = `
     (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 `;
 
+export const UPDATE = `
+    UPDATE questions
+    SET question = ?, is_answer_1_correct = ?, is_answer_2_correct = ?, is_answer_3_correct = ?, is_answer_4_correct = ?, answer_1 = ?, answer_2 = ?, answer_3 = ?, answer_4 = ?
+    WHERE id = ?;
+`;
+
 export const DELETE = `
     DELETE FROM questions
     WHERE id = ?;

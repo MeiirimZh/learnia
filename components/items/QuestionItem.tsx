@@ -17,7 +17,7 @@ export default function QuestionItem({ question, number, onPressMain }: Props) {
                     width: number > 99 ? '10%' : '7%', 
                     alignItems: 'center' 
                 }}>
-                    <AppText style={{ fontSize: 18, color: theme.colors.primary }}>{ number }</AppText>
+                    <AppText style={{ fontSize: 18, color: theme.colors.secondary }}>{ number }</AppText>
                 </View>
                 <AppText numberOfLines={ 4 }>{ question }</AppText>
             </TouchableOpacity>
