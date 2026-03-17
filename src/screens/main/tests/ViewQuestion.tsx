@@ -43,7 +43,15 @@ export default function ViewQuestion({ navigation, route }: Props) {
         }
     }, []);
 
-    const showToast = () => {
+    const showQuestionToast = () => {
+        Toast.show({
+            type: 'error',
+            text1: '⚠️ Ошибка!',
+            text2: 'Заполните поле вопроса'
+        });
+    };
+
+    const showAnswersToast = () => {
         Toast.show({
             type: 'error',
             text1: '⚠️ Ошибка!',
@@ -52,8 +60,12 @@ export default function ViewQuestion({ navigation, route }: Props) {
     };
 
     const addQuestion = async () => {
+        if (!question) {
+            throw new Error("question is empty");
+        };
+
         if (numbersOfCorrectAnswers.length === 0) {
-            throw "numbersOfCorrectAnswers is empty";
+            throw new Error("numbersOfCorrectAnswers is empty");
         };
 
         await db.runAsync(QuestionsQueries.INSERT, [
@@ -71,8 +83,12 @@ export default function ViewQuestion({ navigation, route }: Props) {
     };
 
     const updateQuestion = async () => {
+        if (!question) {
+            throw new Error("question is empty");
+        };
+
         if (numbersOfCorrectAnswers.length === 0) {
-            throw "numbersOfCorrectAnswers is empty";
+            throw new Error("numbersOfCorrectAnswers is empty");
         };
 
         await db.runAsync(QuestionsQueries.UPDATE, [
@@ -87,6 +103,17 @@ export default function ViewQuestion({ navigation, route }: Props) {
             answer4,
             questionId
         ]);
+    };.
+
+    const handleErrorAndShowToast = (error: unknown) => {
+        if (error instanceof Error) {
+            if (error.message === "question is empty") {
+                showQuestionToast();
+            }
+            else if (error.message === "numbersOfCorrectAnswers is empty") {
+                showAnswersToast();
+            }
+        }
     };
 
     useLayoutEffect(() => {
@@ -102,7 +129,7 @@ export default function ViewQuestion({ navigation, route }: Props) {
                                 navigation.goBack();
                             }
                             catch (error) {
-                                showToast();
+                                handleErrorAndShowToast(error);
                             }
                         }
                         else {
@@ -111,7 +138,7 @@ export default function ViewQuestion({ navigation, route }: Props) {
                                 navigation.goBack();
                             }
                             catch (error) {
-                                showToast();
+                                handleErrorAndShowToast(error);
                             }
                         }
                     }}>
