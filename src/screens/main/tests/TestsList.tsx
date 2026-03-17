@@ -8,6 +8,9 @@ import { useSQLiteContext } from "expo-sqlite";
 import * as TestsQueries from "../../../database/queries/TestsQueries";
 import useTests from "../../../hooks/useTests";
 import useCategories from "../../../hooks/useCategories";
+import useQuestions from "../../../hooks/useQuestions";
+
+import { Question } from "../../../../types";
 
 import { StyleSheet, ScrollView, View, TextInput, TouchableOpacity, FlatList } from "react-native";
 import AppText from "../../../../components/AppText";
@@ -36,6 +39,7 @@ export default function TestsList({ navigation }: Props) {
     const db = useSQLiteContext();
     const { tests, loadTests } = useTests();
     const { categories } = useCategories();
+    const { questions } = useQuestions();
 
     const [ isTestModalVisible, setIsTestModalVisible ] = useState<boolean>(false);
     const [ isChoiceModalVisible, setIsChoiceModalVisible ] = useState<boolean>(false);
@@ -127,6 +131,16 @@ export default function TestsList({ navigation }: Props) {
         reset();
     };
 
+    const getQuestionsByTestId = (testId: number) => {
+        const testQuestions: Question[] = [];
+
+        questions.forEach((element) => {
+            if (element.test_id === testId) testQuestions.push(element);
+        });
+
+        return testQuestions;
+    };
+
     return (
         <View style={ styles.container }>
             <FlatList
@@ -137,11 +151,14 @@ export default function TestsList({ navigation }: Props) {
         	        );
                     const color = category?.color ?? "#ababab";
 
+                    const testQuestions = getQuestionsByTestId(item.id);
+                    const totalQuestionsCount = testQuestions.length;
+
                     return (
                         <TestItem 
                             title={ item.title }
                             color={ color }
-                            totalQuestionsCount={ 10 }
+                            totalQuestionsCount={ totalQuestionsCount }
                             lastResult={ 30 }
                             onPressMain={() => {
                                 navigation.navigate("ViewTest", { test: item })
