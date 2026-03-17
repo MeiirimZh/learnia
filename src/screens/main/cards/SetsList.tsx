@@ -8,6 +8,9 @@ import { useSQLiteContext } from "expo-sqlite";
 import * as SetsQueries from "../../../database/queries/SetsQueries";
 import useSets from "../../../hooks/useSets";
 import useCategories from "../../../hooks/useCategories";
+import useCards from "../../../hooks/useCards";
+
+import { Card } from "../../../../types";
 
 import { StyleSheet, View, ScrollView, TextInput, TouchableOpacity, FlatList } from "react-native";
 import AppText from "../../../../components/AppText";
@@ -36,6 +39,7 @@ export default function SetsList({ navigation }: Props) {
     const db = useSQLiteContext();
     const { sets, loadSets } = useSets();
     const { categories } = useCategories();
+    const { cards } = useCards();
 
     const [ isSetModalVisible, setIsSetModalVisible ] = useState<boolean>(false);
     const [ isChoiceModalVisible, setIsChoiceModalVisible ] = useState<boolean>(false);
@@ -127,6 +131,16 @@ export default function SetsList({ navigation }: Props) {
         setIsChoiceModalVisible(true);
     };
 
+    const getCardsBySetId = (setId: number) => {
+        const setCards: Card[] = [];
+
+        cards.forEach((element) => {
+            if (element.set_id === setId) setCards.push(element);
+        });
+
+        return setCards;
+    };
+
     return (
         <View style={ styles.container }>
             <FlatList
@@ -138,11 +152,14 @@ export default function SetsList({ navigation }: Props) {
         	        );
                     const color = category?.color ?? "#ababab";
 
+                    const setCards = getCardsBySetId(item.id);
+                    const totalCardsCount = setCards.length;
+
                     return ( 
                         <SetItem 
                             title={ item.title }
                             color={ color }
-                            totalCardsCount={ 1 }
+                            totalCardsCount={ totalCardsCount }
                             onPressMain={() => navigation.navigate("ViewSet", { set: item })}
                             onPressReview={() => {}}
                             onPressPractice={() => {}}
