@@ -10,6 +10,7 @@ export type RootStackParamList = {
         category?: Category;
         onGoBack?: () => void;
     } | undefined,
+    Settings: undefined,
 };
 
 export type NotesStackParamList = {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -58,6 +58,19 @@ export default function SetsList({ navigation }: Props) {
 
         setSelectedCategory(categoryName);
     }, [categoryId]);
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <TouchableOpacity style={ styles.headerButton } onPress={() => navigation.navigate("Settings")}>
+                    <Ionicons name="settings" color={ theme.colors.onPrimary } size={ 24 } />
+                </TouchableOpacity>
+            ),
+            headerRightContainerStyle: {
+                paddingRight: theme.spacing.md
+            }
+        });
+    }, []);
 
     const reset = () => {
         closeAllModals();
@@ -327,6 +340,12 @@ const styles = StyleSheet.create({
         padding: theme.spacing.md
     },
 
+    headerButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 50,
+        height: 50
+    },
     createButton: {
         justifyContent: 'center',
         alignItems: 'center',
