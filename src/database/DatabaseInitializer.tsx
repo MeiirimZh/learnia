@@ -15,6 +15,7 @@ import * as QuestionsQueries from "./queries/QuestionsQueries";
 import * as RepetitionsQueries from "./queries/RepetitionsQueries";
 import * as CardsRepetitionsQueries from "./queries/CardsRepetitions";
 import * as TestsRepetitionsQueries from "./queries/TestsRepetitions";
+import { seedDatabase } from "./Seed";
 
 type Props = {
     onReady: () => void;
@@ -64,6 +65,8 @@ export default function DatabaseInitializer({ onReady }: Props) {
 
                 await db.execAsync(TestsRepetitionsQueries.DROP_TABLE);
                 await db.execAsync(TestsRepetitionsQueries.CREATE_TABLE);
+
+                await seedDatabase(db);
 
                 onReady();
             }}>

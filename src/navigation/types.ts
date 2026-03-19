@@ -31,6 +31,9 @@ export type SetsStackParamList = {
         front?: string,
         back?: string
     } | undefined,
+    ReviewSet: {
+        set: Set
+    }
 };
 
 export type TestsStackParamList = {

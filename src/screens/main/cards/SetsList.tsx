@@ -161,7 +161,18 @@ export default function SetsList({ navigation }: Props) {
                             color={ color }
                             totalCardsCount={ totalCardsCount }
                             onPressMain={() => navigation.navigate("ViewSet", { set: item })}
-                            onPressReview={() => {}}
+                            onPressReview={() => {
+                                if (totalCardsCount > 0) {
+                                    navigation.navigate("ReviewSet", { set: item })
+                                }
+                                else {
+                                    Toast.show({
+                                        type: 'info',
+                                        text1: '📄 Сведения',
+                                        text2: 'Набор карт пуст'
+                                    });
+                                }
+                            }}
                             onPressPractice={() => {}}
                             onOptionsPress={() => {
                                 setId(item.id);

@@ -45,6 +45,12 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.bgLight,
 
         borderRadius: 10,
+
+        elevation: 5,
+        shadowColor: theme.colors.shadow,
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.12,
+        shadowRadius: 10,
         
         padding: theme.spacing.md
     }

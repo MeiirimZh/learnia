@@ -103,7 +103,7 @@ export default function ViewQuestion({ navigation, route }: Props) {
             answer4,
             questionId
         ]);
-    };.
+    };
 
     const handleErrorAndShowToast = (error: unknown) => {
         if (error instanceof Error) {

@@ -50,7 +50,7 @@ export default function SetItem({
                     </AppText>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View style={{ flexDirection: 'row', gap: theme.spacing.md }}>
-                            <TouchableOpacity style={ styles.studyButton }>
+                            <TouchableOpacity style={ styles.studyButton } onPress={ onPressReview }>
                                 <AppText style={{ fontSize: 12, color: theme.colors.primary }}>ОБЗОР</AppText>
                             </TouchableOpacity>
 
