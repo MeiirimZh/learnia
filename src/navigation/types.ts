@@ -33,7 +33,10 @@ export type SetsStackParamList = {
         back?: string
     } | undefined,
     ReviewSet: {
-        set: Set
+        set: Set | null
+    },
+    SelectDefinitionSet: {
+        set: Set | null
     }
 };
 

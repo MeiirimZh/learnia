@@ -6,6 +6,7 @@ import SetsList from "./SetsList";
 import ViewSet from "./ViewSet";
 import ViewCard from "./ViewCard";
 import ReviewSet from "./practice/ReviewSet";
+import SelectDefinitionSet from "./practice/SelectDefinitionSet";
 
 import { theme } from "../../../theme";
 
@@ -27,6 +28,7 @@ export default function SetsStack() {
             <Stack.Screen name="ViewSet" component={ ViewSet } />
             <Stack.Screen name="ViewCard" component={ ViewCard } />
             <Stack.Screen name="ReviewSet" component={ ReviewSet } />
+            <Stack.Screen name="SelectDefinitionSet" component={ SelectDefinitionSet } />
         </Stack.Navigator>
     )
 }

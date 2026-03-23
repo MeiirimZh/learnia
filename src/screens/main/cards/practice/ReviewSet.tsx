@@ -19,7 +19,7 @@ type Props = StackScreenProps<SetsStackParamList, "ReviewSet">;
 export default function ReviewSet({ navigation, route }: Props) {
     const set = route.params.set;
 
-    const { cards, loading } = useCards(set.id);
+    const { cards, loading } = useCards(set?.id);
 
     const [ shuffledCards, setShuffledCards ] = useState<typeof cards>([]);
     const [ currentIndex, setCurrentIndex ] = useState<number>(0);
@@ -36,7 +36,7 @@ export default function ReviewSet({ navigation, route }: Props) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: set.title
+            title: set?.title
         });
     }, []);
 

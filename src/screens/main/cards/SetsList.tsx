@@ -10,7 +10,7 @@ import useSets from "../../../hooks/useSets";
 import useCategories from "../../../hooks/useCategories";
 import useCards from "../../../hooks/useCards";
 
-import { Card } from "../../../../types";
+import { Set, Card } from "../../../../types";
 
 import { StyleSheet, View, ScrollView, TextInput, TouchableOpacity, FlatList } from "react-native";
 import AppText from "../../../../components/AppText";
@@ -19,6 +19,7 @@ import FloatingActions from '../../../../components/menus/FloatingActions';
 import FloatingActionsButton from '../../../../components/buttons/FloatingActionsButton';
 import SetItem from "../../../../components/items/SetItem";
 import CategoryItem from "../../../../components/items/CategoryItem";
+import RoundIcon from "../../../../components/icons/RoundIcon";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 
@@ -43,12 +44,14 @@ export default function SetsList({ navigation }: Props) {
 
     const [ isSetModalVisible, setIsSetModalVisible ] = useState<boolean>(false);
     const [ isChoiceModalVisible, setIsChoiceModalVisible ] = useState<boolean>(false);
+    const [ isPracticeModalVisible, setIsPracticeModalVisible ] = useState<boolean>(false);
 
     const [ id, setId ] = useState<number | null>(null);
     const [ title, setTitle ] = useState<string>("");
     const [ version, setVersion ] = useState<string>("");
     const [ categoryId, setCategoryId ] = useState<number>(1);
     const [ selectedCategory, setSelectedCategory ] = useState<string>("Нет");
+    const [ currentSet, setCurrentSet ] = useState<Set | null>(null);
 
     useEffect(() => {
         const category = categories.find(
@@ -186,7 +189,10 @@ export default function SetsList({ navigation }: Props) {
                                     });
                                 }
                             }}
-                            onPressPractice={() => {}}
+                            onPressPractice={() => {
+                                setCurrentSet(item);
+                                setIsPracticeModalVisible(true);
+                            }}
                             onOptionsPress={() => {
                                 setId(item.id);
                                 setTitle(item.title);
@@ -314,6 +320,38 @@ export default function SetsList({ navigation }: Props) {
                     <Ionicons name="add" size={ 24 } color={ theme.colors.onPrimary } />
                 </TouchableOpacity>
             </AppModal>
+        
+            <AppModal visible={ isPracticeModalVisible } onPress={() => {
+                setIsPracticeModalVisible(false);
+                setCurrentSet(null);
+            }}>
+                <ScrollView contentContainerStyle={ styles.modal }>
+                    <AppText style={{ 
+                        fontFamily: theme.fonts.bold,
+                        fontSize: 16
+                    }}>
+                        Выберите режим практики
+                    </AppText>
+                    <TouchableOpacity 
+                        style={[ styles.practiceOptionButton, styles.shadow ]}
+                        onPress={() => navigation.navigate("ReviewSet", { set: currentSet })}>
+                        <RoundIcon name="checkmark" bgColor={ theme.colors.danger } color={ theme.colors.onPrimary } />
+                        <AppText style={ styles.practiceOptionText }>Базовый обзор</AppText>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        style={[ styles.practiceOptionButton, styles.shadow ]}
+                        onPress={() => navigation.navigate("SelectDefinitionSet", { set: currentSet })}>
+                        <RoundIcon name="menu" bgColor={ theme.colors.primary } color={ theme.colors.onPrimary } />
+                        <AppText style={ styles.practiceOptionText }>Выберите определение</AppText>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        style={[ styles.practiceOptionButton, styles.shadow ]}
+                        onPress={() => {}}>
+                        <RoundIcon name="repeat" bgColor={ theme.colors.success } color={ theme.colors.onPrimary } />
+                        <AppText style={ styles.practiceOptionText }>Базовый обзор</AppText>
+                    </TouchableOpacity>
+                </ScrollView>
+            </AppModal>
         </View>
     )
 }
@@ -353,6 +391,21 @@ const styles = StyleSheet.create({
         borderRadius: 10,
 
         padding: theme.spacing.md
+    },
+    practiceOptionButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: theme.spacing.md,
+
+        borderRadius: 10,
+
+        backgroundColor: theme.colors.bgLight,
+
+        padding: theme.spacing.md
+    },
+
+    practiceOptionText: {
+        fontFamily: theme.fonts.semibold
     },
 
     shadow: {

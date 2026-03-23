@@ -54,7 +54,7 @@ export default function SetItem({
                                 <AppText style={{ fontSize: 12, color: theme.colors.primary }}>ОБЗОР</AppText>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={ styles.studyButton }>
+                            <TouchableOpacity style={ styles.studyButton } onPress={ onPressPractice }>
                                 <AppText style={{ fontSize: 12, color: theme.colors.primary }}>ПРАКТИКА</AppText>
                             </TouchableOpacity>
                         </View>
