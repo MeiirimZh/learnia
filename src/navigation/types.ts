@@ -37,6 +37,9 @@ export type SetsStackParamList = {
     },
     SelectDefinitionSet: {
         set: Set | null
+    },
+    MatchingSet: {
+        set: Set | null
     }
 };
 

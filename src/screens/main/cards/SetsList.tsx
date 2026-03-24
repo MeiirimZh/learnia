@@ -346,7 +346,7 @@ export default function SetsList({ navigation }: Props) {
                     </TouchableOpacity>
                     <TouchableOpacity 
                         style={[ styles.practiceOptionButton, styles.shadow ]}
-                        onPress={() => {}}>
+                        onPress={() => navigation.navigate("MatchingSet", { set: currentSet })}>
                         <RoundIcon name="repeat" bgColor={ theme.colors.success } color={ theme.colors.onPrimary } />
                         <AppText style={ styles.practiceOptionText }>Сопоставление</AppText>
                     </TouchableOpacity>
