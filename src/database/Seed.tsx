@@ -9,11 +9,23 @@ export const seedDatabase = async (db: SQLiteDatabase) => {
         "#4774c3"
     ]);
 
+    await db.runAsync(CategoriesQueries.INSERT, [
+        "Математика",
+        "#fc2b0b"
+    ]);
+
     await db.runAsync(SetsQueries.INSERT, [
         "Абстрактные понятия",
         "2026-03-19",
         "1.0",
         2
+    ]);
+
+    await db.runAsync(SetsQueries.INSERT, [
+        "Геометрия",
+        "2026-03-24",
+        "1.0",
+        3
     ]);
 
     await db.runAsync(CardsQueries.INSERT, [
@@ -38,5 +50,11 @@ export const seedDatabase = async (db: SQLiteDatabase) => {
         "Life",
         "Жизнь",
         1
+    ]);
+
+    await db.runAsync(CardsQueries.INSERT, [
+        "Число Пи",
+        "Отношение длины окружности к ее диаметру",
+        2
     ]);
 };

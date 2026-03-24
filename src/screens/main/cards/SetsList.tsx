@@ -91,6 +91,14 @@ export default function SetsList({ navigation }: Props) {
         });
     };
 
+    const showNotEnoughCardsToast = () => {
+        Toast.show({
+            type: 'error',
+            text1: '⚠️ Ошибка!',
+            text2: 'Недостаточно карточек: должно быть минимум 4'
+        });
+    };
+
     const createSet = async () => {
         if (!title) {
             showInvalidTitleToast();
@@ -340,7 +348,13 @@ export default function SetsList({ navigation }: Props) {
                     </TouchableOpacity>
                     <TouchableOpacity 
                         style={[ styles.practiceOptionButton, styles.shadow ]}
-                        onPress={() => navigation.navigate("SelectDefinitionSet", { set: currentSet })}>
+                        onPress={() => {
+                            const setCards = cards.filter((card) => card.set_id === currentSet?.id);
+                            if ( setCards.length >= 4 )
+                                navigation.navigate("SelectDefinitionSet", { set: currentSet })
+                            else
+                                showNotEnoughCardsToast()
+                        }}>
                         <RoundIcon name="menu" bgColor={ theme.colors.primary } color={ theme.colors.onPrimary } />
                         <AppText style={ styles.practiceOptionText }>Выбор определения</AppText>
                     </TouchableOpacity>
