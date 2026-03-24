@@ -7,8 +7,7 @@ import useCards from "../../../../hooks/useCards";
 
 import { StyleSheet, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import AppText from "../../../../../components/AppText";
-import TextButton from "../../../../../components/buttons/TextButton";
-import { Ionicons } from "@expo/vector-icons";
+import StudyResult from "../../../../../components/menus/StudyResult";
 
 import { theme } from "../../../../theme";
 
@@ -25,8 +24,8 @@ export default function ReviewSet({ navigation, route }: Props) {
     const [ currentIndex, setCurrentIndex ] = useState<number>(0);
     const [ showFront, setShowFront ] = useState<boolean>(true);
     const [ finished, setFinished ] = useState<boolean>(false);
-    const [ wrongAnswersCount, setWrongAnswerCount ] = useState<number>(0);
-    const [ correctAnswerCount, setCorrectAnswersCount ] = useState<number>(0);
+    const [ wrongAnswersCount, setWrongAnswersCount ] = useState<number>(0);
+    const [ correctAnswersCount, setCorrectAnswersCount ] = useState<number>(0);
 
     useEffect(() => {
         if (cards.length > 0) {
@@ -51,11 +50,11 @@ export default function ReviewSet({ navigation, route }: Props) {
     };
 
     const markCorrectAnswer = () => {
-        setCorrectAnswersCount(correctAnswerCount + 1);
+        setCorrectAnswersCount(correctAnswersCount + 1);
     };
 
     const markWrongAnswer = () => {
-        setWrongAnswerCount(wrongAnswersCount + 1);
+        setWrongAnswersCount(wrongAnswersCount + 1);
     };
 
     if (loading) {
@@ -68,34 +67,16 @@ export default function ReviewSet({ navigation, route }: Props) {
 
     if (finished) {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: theme.spacing.lg, padding: theme.spacing.lg }}>
-                <Ionicons name="star" color={ theme.colors.secondary } size={ 50 } />
-                <AppText style={{ fontFamily: theme.fonts.semibold, fontSize: 20 }}>Просмотр завершен!</AppText>
-                <View style={{ flexDirection: 'row', gap: theme.spacing.md }}>
-                    <View style={ styles.result }>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
-                            <Ionicons name="checkmark-circle-outline" color={ theme.colors.success } size={ 24 } />
-                            <AppText>{ correctAnswerCount }</AppText>
-                        </View>
-                        <AppText>Правильные ответы</AppText>
-                    </View>
-                    <View style={ styles.result }>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Ionicons name="close-circle-outline" color={ theme.colors.danger } size={ 24 } />
-                            <AppText>{ wrongAnswersCount }</AppText>
-                        </View>
-                        <AppText>Неправильные ответы</AppText>
-                    </View>
-                </View>
-                <TextButton text="Вернуться" onPress={() => 
+            <StudyResult
+                correctAnswersCount={ correctAnswersCount }
+                wrongAnswersCount={ wrongAnswersCount }
+                onReturn={() =>
                     navigation.reset({
                         index: 0,
                         routes: [
                             { name: "SetsList" }
                         ],
-                    })
-                } onLongPress={() => {}} />
-            </View>
+                })}/>
         )
     } else {
         return (
@@ -160,24 +141,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
 
         borderRadius: 10,
-
-        padding: theme.spacing.md
-    },
-
-    result: {
-        flex: 0.5,
-        justifyContent: 'center',
-        alignItems: 'center',
-
-        borderRadius: 10,
-
-        elevation: 5,
-        shadowColor: theme.colors.shadow,
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.12,
-        shadowRadius: 10,
-
-        backgroundColor: theme.colors.bgLight,
 
         padding: theme.spacing.md
     },

@@ -342,13 +342,13 @@ export default function SetsList({ navigation }: Props) {
                         style={[ styles.practiceOptionButton, styles.shadow ]}
                         onPress={() => navigation.navigate("SelectDefinitionSet", { set: currentSet })}>
                         <RoundIcon name="menu" bgColor={ theme.colors.primary } color={ theme.colors.onPrimary } />
-                        <AppText style={ styles.practiceOptionText }>Выберите определение</AppText>
+                        <AppText style={ styles.practiceOptionText }>Выбор определения</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity 
                         style={[ styles.practiceOptionButton, styles.shadow ]}
                         onPress={() => {}}>
                         <RoundIcon name="repeat" bgColor={ theme.colors.success } color={ theme.colors.onPrimary } />
-                        <AppText style={ styles.practiceOptionText }>Базовый обзор</AppText>
+                        <AppText style={ styles.practiceOptionText }>Сопоставление</AppText>
                     </TouchableOpacity>
                 </ScrollView>
             </AppModal>

@@ -33,4 +33,10 @@ export const seedDatabase = async (db: SQLiteDatabase) => {
         "Сострадание",
         1
     ]);
+
+    await db.runAsync(CardsQueries.INSERT, [
+        "Life",
+        "Жизнь",
+        1
+    ]);
 };
