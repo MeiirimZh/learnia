@@ -25,6 +25,7 @@ import Toast from "react-native-toast-message";
 import { theme } from "../../../theme";
 
 import { getTodayFormatted } from "../../../utils/date";
+import { shareJsonTests } from "../../../utils/sharing";
 
 type TestsNav = StackNavigationProp<TestsStackParamList, "TestsList">;
 type RootNav = StackNavigationProp<RootStackParamList>;
@@ -187,7 +188,9 @@ export default function TestsList({ navigation }: Props) {
 
                                 setIsTestModalVisible(true);
                             }}
-                            onPressShare={() => {}} />
+                            onPressShare={() => {
+                                shareJsonTests(item, testQuestions, category ?? categories[0], "test", "Поделиться тестом");
+                            }} />
                     )  
                 }}
                 ItemSeparatorComponent={() => ( <View style={{ height: theme.spacing.md }} /> )}

@@ -57,7 +57,7 @@ export default function TestItem({
                             </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity style={ styles.sideButton }>
+                        <TouchableOpacity style={ styles.sideButton } onPress={ onPressShare }>
                             <Ionicons name="share-social" size={ 24 } />
                         </TouchableOpacity>
                     </View>
