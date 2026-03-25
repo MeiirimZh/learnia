@@ -26,6 +26,7 @@ import Toast from "react-native-toast-message";
 import { theme } from "../../../theme";
 
 import { getTodayFormatted } from "../../../utils/date";
+import { shareJsonCards } from "../../../utils/sharing";
 
 type SetsNav = StackNavigationProp<SetsStackParamList, "SetsList">;
 type RootNav = StackNavigationProp<RootStackParamList>;
@@ -209,7 +210,9 @@ export default function SetsList({ navigation }: Props) {
 
                                 setIsSetModalVisible(true);
                             }}
-                            onPressShare={() => {}} />
+                            onPressShare={() => {
+                                shareJsonCards(item, setCards, category ?? categories[0], "cards", "Поделиться карточками");
+                            }} />
                     )
                 }}
                 ItemSeparatorComponent={() => ( <View style={{ height: theme.spacing.md }} /> )}
