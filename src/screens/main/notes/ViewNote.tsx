@@ -13,6 +13,9 @@ import { NotesStackParamList } from "../../../navigation/types";
 import { theme } from "../../../theme";
 import { Ionicons } from "@expo/vector-icons";
 
+import { getTodayFormatted } from "../../../utils/date";
+import { shareJsonNotes } from "../../../utils/sharing";
+
 type Props = StackScreenProps<NotesStackParamList, "ViewNote">;
 
 export default function ViewNote({ navigation, route }: Props) {
@@ -71,11 +74,30 @@ export default function ViewNote({ navigation, route }: Props) {
             ),
             headerTintColor: theme.colors.onPrimary,
             headerRight: () => (
-                <TouchableOpacity
-                    style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }} 
-                    onPress={() => setReadMode(prev => !prev)}>
-                    <Ionicons name={ readMode ? "pencil" : "book" } size={ 24 } color={ theme.colors.onPrimary } />
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', gap: theme.spacing.md }}>
+                    <TouchableOpacity
+                        style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}
+                        onPress={ () => {
+                            if (typeof note === 'undefined') {
+                                shareJsonNotes({
+                                    id: noteId ? noteId : 10000,
+                                    title: noteTitle,
+                                    content: noteContent,
+                                    creation_date: getTodayFormatted()
+                                }, "note", "Поделиться заметкой");
+                            }
+                            else {
+                                shareJsonNotes(note, "note", "Поделиться заметкой");
+                            }
+                        } }>
+                        <Ionicons name="share-social" size={ 24 } color={ theme.colors.onPrimary } />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }} 
+                        onPress={() => setReadMode(prev => !prev)}>
+                        <Ionicons name={ readMode ? "pencil" : "book" } size={ 24 } color={ theme.colors.onPrimary } />
+                    </TouchableOpacity>
+                </View>
             ),
             headerRightContainerStyle: {
                 paddingRight: theme.spacing.md
