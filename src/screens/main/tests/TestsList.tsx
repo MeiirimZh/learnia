@@ -85,6 +85,14 @@ export default function TestsList({ navigation }: Props) {
         });
     };
 
+    const showNotEnoughtQuestionsToast = () => {
+        Toast.show({
+            type: 'error',
+            text1: '⚠️ Ошибка!',
+            text2: 'Тест пуст'
+        });
+    };
+
     const createTest = async () => {
         if (!title) {
             showInvalidTitleToast();
@@ -164,7 +172,12 @@ export default function TestsList({ navigation }: Props) {
                                 navigation.navigate("ViewTest", { test: item })
                             }}
                             onPressStart={() => {
-                                navigation.navigate("TakeTest", { test: item })
+                                if (totalQuestionsCount > 0) {
+                                    navigation.navigate("TakeTest", { test: item });
+                                }
+                                else {
+                                    showNotEnoughtQuestionsToast();
+                                }
                             }}
                             onOptionsPress={() => {
                                 setId(item.id);

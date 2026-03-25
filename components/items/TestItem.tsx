@@ -44,14 +44,9 @@ export default function TestItem({
                         </TouchableOpacity>
                     </View>
                     <AppText 
-                        style={{ color: theme.colors.textMuted }}
-                        numberOfLines={ 1 }>
-                        { `Количество вопросов: ${ totalQuestionsCount }` }
-                    </AppText>
-                    <AppText 
                         style={{ color: theme.colors.textMuted, marginBottom: theme.spacing.md }}
                         numberOfLines={ 1 }>
-                        { `Последний результат: ${ lastResult }%` }
+                        { `Количество вопросов: ${ totalQuestionsCount }` }
                     </AppText>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View style={{ flexDirection: 'row', gap: theme.spacing.md }}>
