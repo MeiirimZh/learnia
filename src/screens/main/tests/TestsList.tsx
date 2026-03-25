@@ -163,7 +163,9 @@ export default function TestsList({ navigation }: Props) {
                             onPressMain={() => {
                                 navigation.navigate("ViewTest", { test: item })
                             }}
-                            onPressStart={() => {}}
+                            onPressStart={() => {
+                                navigation.navigate("TakeTest", { test: item })
+                            }}
                             onOptionsPress={() => {
                                 setId(item.id);
                                 setTitle(item.title);

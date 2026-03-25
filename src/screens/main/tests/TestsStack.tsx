@@ -4,6 +4,7 @@ import { TestsStackParamList } from "../../../navigation/types";
 import TestsList from "./TestsList";
 import ViewTest from "./ViewTest";
 import ViewQuestion from "./ViewQuestion";
+import TakeTest from "./practice/TakeTest";
 
 import { theme } from "../../../theme";
 
@@ -24,6 +25,7 @@ export default function TestsStack() {
             <Stack.Screen name="TestsList" component={ TestsList } options={{ title: 'Тесты' }} />
             <Stack.Screen name="ViewTest" component={ ViewTest } />
             <Stack.Screen name="ViewQuestion" component={ ViewQuestion } />
+            <Stack.Screen name="TakeTest" component={ TakeTest } />
         </Stack.Navigator>
     )
 }

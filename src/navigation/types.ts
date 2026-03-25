@@ -60,5 +60,8 @@ export type TestsStackParamList = {
         answer_2?: string,
         answer_3?: string,
         answer_4?: string,
-    } | undefined
+    } | undefined,
+    TakeTest: {
+        test: Test
+    }
 };
