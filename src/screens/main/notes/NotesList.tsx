@@ -19,6 +19,7 @@ import { theme } from "../../../theme";
 import { Ionicons } from "@expo/vector-icons";
 
 import { getFormattedMonthDayFromDateString } from "../../../utils/date";
+import { handleNotesImport } from "../../../utils/sharing";
 
 type Props = StackScreenProps<NotesStackParamList, "NotesList">;
 
@@ -110,6 +111,10 @@ export default function NotesList({ navigation }: Props) {
                     }} /> :
                     <>
                     <FloatingActionsButton name='add' color={ theme.colors.text } onPress={() => navigation.navigate("ViewNote", { isReadMode: false })} />
+                    <FloatingActionsButton name="download-outline" color={ theme.colors.text } onPress={async () => {
+                        await handleNotesImport(db);
+                        await loadNotes();
+                    }} />
 
                     <GradientBorderButton onPress={() => {}} colors={ theme.colors.gradientPrimary } width={ 56 } height={ 56 }>
                         <Ionicons name="sparkles" size={ 24} />

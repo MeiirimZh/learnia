@@ -84,7 +84,7 @@ export default function ViewNote({ navigation, route }: Props) {
                                     title: noteTitle,
                                     content: noteContent,
                                     creation_date: getTodayFormatted()
-                                }, "note", "Поделиться заметкой");
+                                }, "learnia-note", "Поделиться заметкой");
                             }
                             else {
                                 shareJsonNotes(note, "learnia-note", "Поделиться заметкой");

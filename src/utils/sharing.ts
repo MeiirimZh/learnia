@@ -3,6 +3,7 @@ import * as Sharing from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
 
 import { SQLiteDatabase } from "expo-sqlite";
+import * as NotesQueries from "../database/queries/NotesQueries";
 import * as SetsQueries from "../database/queries/SetsQueries";
 import * as CardsQueries from "../database/queries/CardsQueries";
 import * as CategoriesQueries from "../database/queries/CategoriesQueries";
@@ -10,6 +11,8 @@ import * as TestsQueries from "../database/queries/TestsQueries";
 import * as QuestionsQueries from "../database/queries/QuestionsQueries";
 
 import { Note, Set, Card, Category, Test, Question } from "../../types";
+
+import { getTodayFormatted } from "./date";
 
 export const shareJsonNotes = async (
   note: Note | undefined,
@@ -25,7 +28,7 @@ export const shareJsonNotes = async (
 
     const json = JSON.stringify(data, null, 2);
 
-    const file = new File(Paths.cache, `${fileName}.json`);
+    const file = new File(Paths.cache, `${fileName}-${getTodayFormatted()}.json`);
 
     await file.write(json);
 
@@ -60,7 +63,7 @@ export const shareJsonCards = async (
 
     const json = JSON.stringify(data, null, 2);
 
-    const file = new File(Paths.cache, `${fileName}.json`);
+    const file = new File(Paths.cache, `${fileName}-${getTodayFormatted()}.json`);
 
     await file.write(json);
 
@@ -96,7 +99,7 @@ export const shareJsonTests = async (
 
     const json = JSON.stringify(data, null, 2);
 
-    const file = new File(Paths.cache, `${fileName}.json`);
+    const file = new File(Paths.cache, `${fileName}-${getTodayFormatted()}.json`);
 
     await file.write(json);
 
@@ -138,6 +141,20 @@ export const importJson = async () => {
   } catch (error) {
     console.error("Ошибка импорта:", error);
     return null;
+  }
+};
+
+export const handleNotesImport = async (db: SQLiteDatabase) => {
+  const data = await importJson();
+
+  if (!data) return;
+
+  if (data.note) {
+    await db.runAsync(NotesQueries.INSERT, [
+      data.note.title,
+      data.note.content,
+      data.note.creation_date
+    ]);
   }
 };
 
