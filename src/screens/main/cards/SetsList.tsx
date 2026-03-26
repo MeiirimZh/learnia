@@ -211,7 +211,7 @@ export default function SetsList({ navigation }: Props) {
                                 setIsSetModalVisible(true);
                             }}
                             onPressShare={() => {
-                                shareJsonCards(item, setCards, category ?? categories[0], "cards", "Поделиться карточками");
+                                shareJsonCards(item, setCards, category ?? categories[0], "learnia-cards-set", "Поделиться карточками");
                             }} />
                     )
                 }}

@@ -87,7 +87,7 @@ export default function ViewNote({ navigation, route }: Props) {
                                 }, "note", "Поделиться заметкой");
                             }
                             else {
-                                shareJsonNotes(note, "note", "Поделиться заметкой");
+                                shareJsonNotes(note, "learnia-note", "Поделиться заметкой");
                             }
                         } }>
                         <Ionicons name="share-social" size={ 24 } color={ theme.colors.onPrimary } />

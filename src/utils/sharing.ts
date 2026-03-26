@@ -6,6 +6,8 @@ import { SQLiteDatabase } from "expo-sqlite";
 import * as SetsQueries from "../database/queries/SetsQueries";
 import * as CardsQueries from "../database/queries/CardsQueries";
 import * as CategoriesQueries from "../database/queries/CategoriesQueries";
+import * as TestsQueries from "../database/queries/TestsQueries";
+import * as QuestionsQueries from "../database/queries/QuestionsQueries";
 
 import { Note, Set, Card, Category, Test, Question } from "../../types";
 
@@ -175,6 +177,51 @@ export const handleCardsImport = async (db: SQLiteDatabase, categories: Category
         card.front,
         card.back,
         card.set_id
+      ]);
+    });
+  }
+};
+
+export const handleTestsImport = async (db: SQLiteDatabase, categories: Category[]) => {
+  const data = await importJson();
+
+  if (!data) return;
+
+  if (data.test) {
+    const category = categories.find(
+      (category) => category.id === data.category.id
+    );
+
+    if (!category) {
+      const result = await db.runAsync(CategoriesQueries.INSERT, [
+        data.category.name,
+        data.category.color
+      ]);
+
+      await db.runAsync(TestsQueries.INSERT, [
+        data.test.title,
+        data.test.creation_date,
+        data.test.version,
+        result.lastInsertRowId
+      ]);
+    } else {
+      await db.runAsync(TestsQueries.INSERT, [
+        data.test.title,
+        data.test.creation_date,
+        data.test.version,
+        data.category.id
+      ]);
+    }
+
+    data.questions.forEach(async (question: Question) => {
+      await db.runAsync(QuestionsQueries.INSERT, [
+        question.question,
+        question.is_answer_1_correct,
+        question.is_answer_2_correct,
+        question.is_answer_3_correct,
+        question.is_answer_4_correct,
+        question.answer_1, question.answer_2, question.answer_3, question.answer_4,
+        question.test_id
       ]);
     });
   }

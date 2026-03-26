@@ -25,7 +25,7 @@ import Toast from "react-native-toast-message";
 import { theme } from "../../../theme";
 
 import { getTodayFormatted } from "../../../utils/date";
-import { shareJsonTests } from "../../../utils/sharing";
+import { shareJsonTests, handleTestsImport } from "../../../utils/sharing";
 
 type TestsNav = StackNavigationProp<TestsStackParamList, "TestsList">;
 type RootNav = StackNavigationProp<RootStackParamList>;
@@ -39,8 +39,8 @@ type Props = {
 export default function TestsList({ navigation }: Props) {
     const db = useSQLiteContext();
     const { tests, loadTests } = useTests();
-    const { categories } = useCategories();
-    const { questions } = useQuestions();
+    const { categories, loadCategories } = useCategories();
+    const { questions, loadQuestions } = useQuestions();
 
     const [ isTestModalVisible, setIsTestModalVisible ] = useState<boolean>(false);
     const [ isChoiceModalVisible, setIsChoiceModalVisible ] = useState<boolean>(false);
@@ -189,7 +189,7 @@ export default function TestsList({ navigation }: Props) {
                                 setIsTestModalVisible(true);
                             }}
                             onPressShare={() => {
-                                shareJsonTests(item, testQuestions, category ?? categories[0], "test", "Поделиться тестом");
+                                shareJsonTests(item, testQuestions, category ?? categories[0], "learnia-test", "Поделиться тестом");
                             }} />
                     )  
                 }}
@@ -199,6 +199,12 @@ export default function TestsList({ navigation }: Props) {
             <FloatingActions>
                 <FloatingActionsButton name="add" color={ theme.colors.text } onPress={() => {
                     setIsTestModalVisible(true)
+                }} />
+                <FloatingActionsButton name="download-outline" color={ theme.colors.text } onPress={async () => {
+                    await handleTestsImport(db, categories);
+                    await loadCategories();
+                    await loadTests();
+                    await loadQuestions();
                 }} />
             </FloatingActions>
 
