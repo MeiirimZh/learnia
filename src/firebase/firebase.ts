@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFunctions, httpsCallable, connectFunctionsEmulator } from "firebase/functions";
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBdRx1eKVFZOl_en6lokA50CnrZ3yWSH_g",
@@ -11,8 +11,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const functions = getFunctions(app);
-
-connectFunctionsEmulator(functions, "192.168.0.9", 5001);
+export const functions = getFunctions(app, "us-central1");
 
 export const callAskGemini = httpsCallable<{ prompt: string }, { answer: string }>(functions, "askGemini");
