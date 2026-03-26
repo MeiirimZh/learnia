@@ -9,7 +9,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import useNotes from "../../../hooks/useNotes";
 import * as NotesQueries from "../../../database/queries/NotesQueries";
 
-import { StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import AppText from "../../../../components/AppText";
 
 import { theme } from "../../../theme";
@@ -35,19 +35,24 @@ export default function GenerateNote({ navigation, route }: Props) {
 
     const addNote = async (text: string) => {
         const result = await db.runAsync(NotesQueries.INSERT, [
-            "ИИ-конспект",
+            "ИИ заметка",
             text,
             getTodayFormatted()
         ]);
 
-        setNoteId(result.lastInsertRowId);
+        const newNote = {
+            id: result.lastInsertRowId,
+            title: "ИИ заметка",
+            content: text,
+            creation_date: getTodayFormatted()
+        };
 
         await loadNotes();
+
+        return newNote;
     };
 
     const handleSend = async () => {
-        console.log("SEND CLICKED");
-
         if (!prompt.trim()) return;
 
         setLoading(true);
@@ -56,11 +61,10 @@ export default function GenerateNote({ navigation, route }: Props) {
         try {
             const result = await callAskGemini({ prompt });
             setAnswer(result.data.answer);
-            await addNote(result.data.answer);
+            
+            const newNote = await addNote(result.data.answer);
 
-            const note = returnNote();
-
-            navigation.navigate("ViewNote", { note, isReadMode: true })
+            navigation.replace("ViewNote", { note: newNote, isReadMode: true })
         }
         catch (error) {
             console.error(error);
@@ -71,8 +75,6 @@ export default function GenerateNote({ navigation, route }: Props) {
         }
     };
 
-    const returnNote = () => notes.find(note => note.id === noteId);
-
     return (
         <View style={ styles.container }>
             <TextInput
@@ -80,16 +82,20 @@ export default function GenerateNote({ navigation, route }: Props) {
                 multiline
                 value={ prompt }
                 onChangeText={ setPrompt }
-                textAlignVertical="top" />
+                textAlignVertical="top"
+                scrollEnabled={ true } />
+            {loading ? 
+            <ActivityIndicator size="large" color={ theme.colors.primary } /> :
             <TouchableOpacity style={{ 
                 justifyContent: 'center', 
                 alignItems: 'center', 
                 backgroundColor: theme.colors.primary, 
                 borderRadius: 10,
                 padding: theme.spacing.md }}
-                onPress={handleSend}>
+                disabled={ loading }
+                onPress={ handleSend }>
                 <AppText style={{ color: theme.colors.onPrimary }}>Сгенерировать</AppText>
-            </TouchableOpacity>
+            </TouchableOpacity> }
         </View>
     )
 }
@@ -97,6 +103,7 @@ export default function GenerateNote({ navigation, route }: Props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'center',
         gap: theme.spacing.md,
         padding: theme.spacing.md
     }

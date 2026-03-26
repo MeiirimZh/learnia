@@ -13,6 +13,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const functions = getFunctions(app);
 
-connectFunctionsEmulator(functions, "192.168.0.34", 5001);
+connectFunctionsEmulator(functions, "192.168.0.9", 5001);
 
 export const callAskGemini = httpsCallable<{ prompt: string }, { answer: string }>(functions, "askGemini");

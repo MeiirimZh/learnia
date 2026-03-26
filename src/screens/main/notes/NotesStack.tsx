@@ -23,7 +23,7 @@ export default function NotesStack() {
             }}>
             <Stack.Screen name="NotesList" component={ NotesList } options={{ title: 'Заметки' }} />
             <Stack.Screen name="ViewNote" component={ ViewNote } />
-            <Stack.Screen name="GenerateNote" component={ GenerateNote } options={{ title: 'ИИ-конспект' }} />
+            <Stack.Screen name="GenerateNote" component={ GenerateNote } options={{ title: 'Создать заметку с ИИ' }} />
         </Stack.Navigator>
     )
 }

@@ -8,7 +8,15 @@ export const askGemini = onCall(async (request) => {
     throw new HttpsError("internal", "API key missing");
   }
 
-  const {prompt} = request.data;
+  const { prompt } = request.data;
+
+  if (!prompt || typeof prompt !== "string") {
+    throw new HttpsError("invalid-argument", "Prompt is required");
+  }
+
+  if (prompt.length > 1000) {
+    throw new HttpsError("invalid-argument", "Prompt too long");
+  }
 
   const ai = new GoogleGenAI({
     apiKey: GEMINI_API_KEY,
@@ -16,12 +24,40 @@ export const askGemini = onCall(async (request) => {
 
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
-      contents: prompt,
+      model: "gemini-2.5-flash",
+      contents: [
+        {
+          role: "user",
+          parts: [
+            { text: `Дай развернутый, но понятный ответ (5-8 предложений). Объясни подробно, но без лишней воды: ${prompt}` }
+          ]
+        }
+      ],
+      config: {
+        maxOutputTokens: 2048,
+        temperature: 0.7,
+        thinkingConfig: {
+          thinkingBudget: 128
+        }
+      },
     });
 
+    const text =
+      response.candidates
+        ?.flatMap(c => c.content?.parts || [])
+        ?.map(p => p.text)
+        ?.filter(Boolean)
+        ?.join("")
+        ?.trim() || "";
+
+    if (!text) {
+      throw new HttpsError("internal", "Empty response from AI");
+    }
+
+    const safeText = text.trim();
+
     return {
-      answer: response.text,
+      answer: safeText,
     };
   } catch (err: any) {
     console.error(err);
