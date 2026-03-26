@@ -116,7 +116,7 @@ export default function NotesList({ navigation }: Props) {
                         await loadNotes();
                     }} />
 
-                    <GradientBorderButton onPress={() => {}} colors={ theme.colors.gradientPrimary } width={ 56 } height={ 56 }>
+                    <GradientBorderButton onPress={() => navigation.navigate("GenerateNote")} colors={ theme.colors.gradientPrimary } width={ 56 } height={ 56 }>
                         <Ionicons name="sparkles" size={ 24} />
                     </GradientBorderButton>
                     </>

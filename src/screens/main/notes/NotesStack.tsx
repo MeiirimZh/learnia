@@ -4,6 +4,7 @@ import { NotesStackParamList } from "../../../navigation/types";
 
 import NotesList from "./NotesList";
 import ViewNote from "./ViewNote";
+import GenerateNote from "./GenerateNote";
 
 import { theme } from "../../../theme";
 
@@ -22,6 +23,7 @@ export default function NotesStack() {
             }}>
             <Stack.Screen name="NotesList" component={ NotesList } options={{ title: 'Заметки' }} />
             <Stack.Screen name="ViewNote" component={ ViewNote } />
+            <Stack.Screen name="GenerateNote" component={ GenerateNote } options={{ title: 'Создать заметку с ИИ' }} />
         </Stack.Navigator>
     )
 }

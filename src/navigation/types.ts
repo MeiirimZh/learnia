@@ -19,6 +19,7 @@ export type NotesStackParamList = {
         note?: Note,
         isReadMode: boolean
     },
+    GenerateNote: undefined
 };
 
 export type SetsStackParamList = {
