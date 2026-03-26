@@ -26,7 +26,7 @@ import Toast from "react-native-toast-message";
 import { theme } from "../../../theme";
 
 import { getTodayFormatted } from "../../../utils/date";
-import { shareJsonCards } from "../../../utils/sharing";
+import { shareJsonCards, handleCardsImport } from "../../../utils/sharing";
 
 type SetsNav = StackNavigationProp<SetsStackParamList, "SetsList">;
 type RootNav = StackNavigationProp<RootStackParamList>;
@@ -40,8 +40,8 @@ type Props = {
 export default function SetsList({ navigation }: Props) {
     const db = useSQLiteContext();
     const { sets, loadSets } = useSets();
-    const { categories } = useCategories();
-    const { cards } = useCards();
+    const { categories, loadCategories } = useCategories();
+    const { cards, loadCards } = useCards();
 
     const [ isSetModalVisible, setIsSetModalVisible ] = useState<boolean>(false);
     const [ isChoiceModalVisible, setIsChoiceModalVisible ] = useState<boolean>(false);
@@ -220,6 +220,12 @@ export default function SetsList({ navigation }: Props) {
 
             <FloatingActions>
                 <FloatingActionsButton name="add" color={ theme.colors.text } onPress={() => setIsSetModalVisible(true)} />
+                <FloatingActionsButton name="download-outline" color={ theme.colors.text } onPress={async () => {
+                    await handleCardsImport(db, categories);
+                    await loadCategories();
+                    await loadSets();
+                    await loadCards();
+                }} />
             </FloatingActions>
 
             <AppModal visible={ isSetModalVisible } onPress={() => {

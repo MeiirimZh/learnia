@@ -28,7 +28,7 @@ const useCategories = () => {
         }, [])
     );
 
-    return { categories, setCategories, loading };
+    return { categories, setCategories, loading, loadCategories };
 };
 
 export default useCategories;
