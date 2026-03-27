@@ -13,7 +13,7 @@ export default function ViewStatistics() {
             <FlatList
                 data={ studiedCards }
                 renderItem={({ item }) => (
-                    <AppText>{item.id} {item.card_id} {item.studied_at}</AppText>
+                    <AppText>{item.id} {item.card_id} {item.studied_at} { item.is_correct ? "Правильно" : "Неправильно" }</AppText>
                 )} />
         </View>
     )

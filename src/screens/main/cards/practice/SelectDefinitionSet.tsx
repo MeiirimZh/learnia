@@ -56,12 +56,12 @@ export default function SelectDefinitionSet({ navigation, route }: Props) {
     };
 
     const markCorrectAnswer = async () => {
-        await addStudiedCard(db, shuffledCards[currentIndex]?.id);         
+        await addStudiedCard(db, shuffledCards[currentIndex]?.id, 1);         
         setCorrectAnswersCount(correctAnswersCount + 1);
     };
 
     const markWrongAnswer = async () => {
-        await addStudiedCard(db, shuffledCards[currentIndex]?.id);
+        await addStudiedCard(db, shuffledCards[currentIndex]?.id, 0);
         setWrongAnswersCount(wrongAnswersCount + 1);
     };
 

@@ -52,7 +52,8 @@ export type Question = {
 export type StudiedCard = {
     id: number,
     card_id: number,
-    studied_at: string
+    studied_at: string,
+    is_correct: boolean
 };
 
 export type CompletedTest = {

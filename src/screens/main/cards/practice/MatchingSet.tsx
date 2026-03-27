@@ -33,10 +33,19 @@ export default function MatchingSet({ navigation, route }: Props) {
     const [ wrongAnswersCount, setWrongAnswersCount ] = useState<number>(0);
     const [ correctAnswersCount, setCorrectAnswersCount ] = useState<number>(0);
 
-    const removeCard = async (id: number) => {
-        await addStudiedCard(db, id);
+    const removeCard = (id: number) => {
         setFrontCards(prev => prev.filter(card => card.id !== id));
         setBackCards(prev => prev.filter(card => card.id !== id));
+    };
+
+    const markCorrectAnswer = async (id: number) => {
+        await addStudiedCard(db, id, 1);
+        setCorrectAnswersCount(correctAnswersCount + 1);
+    };
+
+    const markWrongAnswer = async (id: number) => {
+        await addStudiedCard(db, id, 0);
+        setWrongAnswersCount(wrongAnswersCount + 1);
     };
 
     useEffect(() => {
@@ -58,9 +67,9 @@ export default function MatchingSet({ navigation, route }: Props) {
         if (selectedFrontId && selectedBackId) {
             if (selectedFrontId === selectedBackId) {
                 removeCard(selectedFrontId);
-                setCorrectAnswersCount(prev => prev + 1);
+                markCorrectAnswer(selectedFrontId);
             } else {
-                setWrongAnswersCount(prev => prev + 1);
+                markWrongAnswer(selectedFrontId);
             }
 
             setSelectedFrontId(null);
