@@ -1,3 +1,4 @@
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import NotesStack from "../screens/main/notes/NotesStack";
@@ -9,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { theme } from "../theme";
 
 const Tab = createBottomTabNavigator();
+const baseTabBarStyle = { height: 100 };
 
 export default function MainTabs() {
     return (
@@ -37,9 +39,57 @@ export default function MainTabs() {
             	height: 100
             }
         	})}>
-            <Tab.Screen name="NotesStack" component={ NotesStack } options={{ title: 'Заметки', headerShown: false }} />
-            <Tab.Screen name="SetsStack" component={ SetsStack } options={{ title: 'Карточки', headerShown: false }} />
-            <Tab.Screen name="TestsStack" component={ TestsStack } options={{ title: 'Тесты', headerShown: false }} />
+            <Tab.Screen 
+				name="NotesStack"
+				component={ NotesStack }
+				options={({ route }) => {
+					const routeName = getFocusedRouteNameFromRoute(route) ?? "NotesList";
+
+					const hideTabBarScreens = ["ViewNote", "GenerateNote"];
+
+					return {
+						title: 'Заметки', 
+						headerShown: false,
+						tabBarStyle: hideTabBarScreens.includes(routeName)
+							? { display: 'none' }
+							: { baseTabBarStyle }
+					};
+				}} 
+			/>
+            <Tab.Screen
+				name="SetsStack"
+				component={ SetsStack }
+				options={({ route }) => {
+					const routeName = getFocusedRouteNameFromRoute(route) ?? "SetsList";
+
+					const hideTabBarScreens = ["ViewSet", "ViewCard", "ReviewSet", "SelectDefinitionSet", "MatchingSet"];
+					
+					return {
+						title: 'Карточки', 
+						headerShown: false,
+						tabBarStyle: hideTabBarScreens.includes(routeName)
+							? { display: 'none' }
+							: { baseTabBarStyle }
+					};
+				}}
+			/>
+            <Tab.Screen
+				name="TestsStack"
+				component={ TestsStack }
+				options={({ route }) => {
+					const routeName = getFocusedRouteNameFromRoute(route) ?? "TestsList";
+
+					const hideTabBarScreens = ["ViewTest", "ViewQuestion", "TakeTest"];
+
+					return {
+						title: 'Тесты', 
+						headerShown: false,
+						tabBarStyle: hideTabBarScreens.includes(routeName)
+							? { display: 'none' }
+							: { baseTabBarStyle }
+					};
+				}} 
+			/>
             <Tab.Screen name="ViewStatistics" component={ ViewStatistics } options={{ 
 				title: 'Статистика',
 				headerStyle: {

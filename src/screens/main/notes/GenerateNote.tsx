@@ -1,4 +1,5 @@
 import { useState, useLayoutEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { callAskGemini } from "../../../firebase/firebase";
 
@@ -19,6 +20,7 @@ import { getTodayFormatted } from "../../../utils/date";
 type Props = StackScreenProps<NotesStackParamList, "GenerateNote">;
 
 export default function GenerateNote({ navigation, route }: Props) {
+    const insets = useSafeAreaInsets();
     const db = useSQLiteContext();
     const { notes, loadNotes } = useNotes();
 
@@ -76,7 +78,7 @@ export default function GenerateNote({ navigation, route }: Props) {
     };
 
     return (
-        <View style={ styles.container }>
+        <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
             <TextInput
                 style={{ flex: 1, backgroundColor: theme.colors.bgLight, fontSize: 16, borderRadius: 10, padding: theme.spacing.md }}
                 multiline

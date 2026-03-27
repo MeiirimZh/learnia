@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { TestsStackParamList } from "../../../../navigation/types";
@@ -15,6 +16,7 @@ type Props = StackScreenProps<TestsStackParamList, "TakeTest">;
 type AnswerKey = "answer_1" | "answer_2" | "answer_3" | "answer_4";
 
 export default function TakeTest({ navigation, route }: Props) {
+    const insets = useSafeAreaInsets();
     const test = route.params.test;
 
     const { questions, loading } = useQuestions(test.id);
@@ -90,12 +92,12 @@ export default function TakeTest({ navigation, route }: Props) {
     const currentResult = answersResult[currentIndex];
 
     return (
-        <View style={styles.container}>
-            <AppText>Вопрос {currentIndex + 1} из {questions.length}</AppText>
-            <AppText>{isMultipleChoice ? "Несколько ответов" : "Один ответ"}</AppText>
+        <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
+            <AppText>Вопрос { currentIndex + 1 } из { questions.length }</AppText>
+            <AppText>{ isMultipleChoice ? "Несколько ответов" : "Один ответ" }</AppText>
 
-            <AppText style={styles.questionText}>
-                {questions[currentIndex].question}
+            <AppText style={ styles.questionText }>
+                { questions[currentIndex].question }
             </AppText>
 
             <View style={{ gap: theme.spacing.md, padding: theme.spacing.sm }}>
@@ -130,7 +132,7 @@ export default function TakeTest({ navigation, route }: Props) {
 
             <View style={{ gap: theme.spacing.md, padding: theme.spacing.sm }}>
                 <TouchableOpacity
-                    style={[styles.moveButton, styles.shadow]}
+                    style={[ styles.moveButton, styles.shadow ]}
                     onPress={() => {
                         const userAnswerString = selectedAnswers
                             .map(v => v ? "1" : "0")

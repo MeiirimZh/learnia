@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { SetsStackParamList } from "../../../../navigation/types";
@@ -18,6 +19,7 @@ import { addStudiedCard } from "../../../../utils/userProgress";
 type Props = StackScreenProps<SetsStackParamList, "ReviewSet">;
 
 export default function ReviewSet({ navigation, route }: Props) {
+    const insets = useSafeAreaInsets();
     const set = route.params.set;
 
     const db = useSQLiteContext();
@@ -85,7 +87,7 @@ export default function ReviewSet({ navigation, route }: Props) {
         )
     } else {
         return (
-            <View style={ styles.container }>
+            <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
                 <View style={ styles.cardContainer }>
                     <TouchableOpacity 
                         style={ [ styles.card, styles.shadow ] }

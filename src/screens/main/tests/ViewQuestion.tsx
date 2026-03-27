@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { TestsStackParamList } from "../../../navigation/types";
@@ -21,6 +22,7 @@ const LINE_HEIGHT = 22;
 const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + VERTICAL_PADDING;
 
 export default function ViewQuestion({ navigation, route }: Props) {
+    const insets = useSafeAreaInsets();
     const db = useSQLiteContext();
 
     const questionId = route.params?.questionId ?? null;
@@ -167,7 +169,7 @@ export default function ViewQuestion({ navigation, route }: Props) {
     ];
 
     return (
-        <View style={ styles.container }>
+        <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
             <TextInput
                 multiline
                 scrollEnabled={ questionHeight >= MAX_HEIGHT }

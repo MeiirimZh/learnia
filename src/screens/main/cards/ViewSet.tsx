@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BackHandler } from "react-native";
 
 import { StackScreenProps } from "@react-navigation/stack";
@@ -19,6 +20,7 @@ import { theme } from "../../../theme";
 type Props = StackScreenProps<SetsStackParamList, "ViewSet">;
 
 export default function ViewSet({ navigation, route }: Props) {
+    const insets = useSafeAreaInsets();
     const db = useSQLiteContext();
     const { set } = route.params;
     const { cards, loadCards } = useCards(set.id);
@@ -57,7 +59,7 @@ export default function ViewSet({ navigation, route }: Props) {
     };
 
     return (
-        <View style={ styles.container }>
+        <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
             <FlatList
                 data={ cards }
                 numColumns={ 2 } 

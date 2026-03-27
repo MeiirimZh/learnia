@@ -1,5 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useSQLiteContext } from "expo-sqlite";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { INSERT, UPDATE, UPDATE_TITLE } from "../../../database/queries/NotesQueries";
 
 import { StyleSheet, ScrollView, View, TextInput, TouchableOpacity } from "react-native";
@@ -19,6 +20,8 @@ import { shareJsonNotes } from "../../../utils/sharing";
 type Props = StackScreenProps<NotesStackParamList, "ViewNote">;
 
 export default function ViewNote({ navigation, route }: Props) {
+    const insets = useSafeAreaInsets();
+
     const db = useSQLiteContext();
 
     const { note, isReadMode } = route.params;
@@ -122,7 +125,7 @@ export default function ViewNote({ navigation, route }: Props) {
     }, [noteContent]);
 
     return (
-        <View style={ styles.container }>
+        <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
             { !readMode ? (
                 <TextInput
                     style={ [styles.textInput, { flex: 1, fontSize: 16 }] }

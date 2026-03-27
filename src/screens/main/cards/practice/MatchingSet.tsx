@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { SetsStackParamList } from "../../../../navigation/types";
@@ -18,6 +19,7 @@ import { addStudiedCard } from "../../../../utils/userProgress";
 type Props = StackScreenProps<SetsStackParamList, "MatchingSet">;
 
 export default function MatchingSet({ navigation, route }: Props) {
+    const insets = useSafeAreaInsets();
     const set = route.params.set;
 
     const db = useSQLiteContext();
@@ -91,7 +93,7 @@ export default function MatchingSet({ navigation, route }: Props) {
 
     if (loading) {
         return (
-            <View style={ styles.container }>
+            <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
                 <ActivityIndicator size="large" color={ theme.colors.primary } />
             </View>
         );
@@ -113,7 +115,7 @@ export default function MatchingSet({ navigation, route }: Props) {
     }
 
     return (
-        <View style={ styles.container }>
+        <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
             <FlatList 
                 data={ frontCards }
                 renderItem={({ item }) => (

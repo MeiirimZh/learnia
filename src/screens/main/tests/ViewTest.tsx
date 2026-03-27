@@ -1,4 +1,5 @@
 import { useState, useEffect, useLayoutEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BackHandler } from "react-native";
 
 import { StackScreenProps } from "@react-navigation/stack";
@@ -9,7 +10,6 @@ import useQuestions from "../../../hooks/useQuestions";
 import * as QuestionsQueries from "../../../database/queries/QuestionsQueries";
 
 import { StyleSheet, View, FlatList, Text } from "react-native";
-import AppText from "../../../../components/AppText";
 import QuestionItem from "../../../../components/items/QuestionItem";
 import FloatingActions from "../../../../components/menus/FloatingActions";
 import FloatingActionsButton from "../../../../components/buttons/FloatingActionsButton";
@@ -19,6 +19,7 @@ import { theme } from "../../../theme";
 type Props = StackScreenProps<TestsStackParamList, "ViewTest">;
 
 export default function ViewTest({ navigation, route }: Props) {
+    const insets = useSafeAreaInsets();
     const db = useSQLiteContext();
     const { test } = route.params;
     const { questions, loadQuestions } = useQuestions(test.id);
@@ -57,7 +58,7 @@ export default function ViewTest({ navigation, route }: Props) {
     };
 
     return (
-        <View style={ styles.container }>
+        <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
             <FlatList
                 data={ questions }
                 renderItem={({ item, index }) => {

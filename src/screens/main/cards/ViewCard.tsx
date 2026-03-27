@@ -1,4 +1,5 @@
 import { useState, useLayoutEffect } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { SetsStackParamList } from "../../../navigation/types";
@@ -7,7 +8,6 @@ import { useSQLiteContext } from "expo-sqlite";
 import * as CardsQueries from "../../../database/queries/CardsQueries";
 
 import { StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
-import AppText from "../../../../components/AppText";
 import { Ionicons } from "@expo/vector-icons";
 
 import { theme } from "../../../theme";
@@ -20,6 +20,7 @@ const LINE_HEIGHT = 22;
 const MAX_HEIGHT = MAX_LINES * LINE_HEIGHT + VERTICAL_PADDING;
 
 export default function ViewCard({ navigation, route }: Props) {
+    const insets = useSafeAreaInsets();
     const db = useSQLiteContext();
 
     const cardId = route.params?.cardId ?? null;
@@ -69,7 +70,7 @@ export default function ViewCard({ navigation, route }: Props) {
     }, [front, back, cardId, setId]);
 
     return (
-        <View style={ styles.container }>
+        <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
             <TextInput
                 multiline
                 scrollEnabled={ frontHeight >= MAX_HEIGHT }
