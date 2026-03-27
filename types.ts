@@ -49,6 +49,19 @@ export type Question = {
     test_id: number
 };
 
+export type StudiedCard = {
+    id: number,
+    card_id: number,
+    studied_at: string
+};
+
+export type CompletedTest = {
+    id: number,
+    test_id: number,
+    score: number,
+    completed_at: string
+};
+
 export type TabParamList = {
     Notes: undefined;
     Cards: undefined;
