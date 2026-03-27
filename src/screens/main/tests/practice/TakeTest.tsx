@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StackScreenProps } from "@react-navigation/stack";
 import { TestsStackParamList } from "../../../../navigation/types";
 
+import { useSQLiteContext } from "expo-sqlite";
 import useQuestions from "../../../../hooks/useQuestions";
 
 import { StyleSheet, View, ActivityIndicator, TouchableOpacity } from "react-native";
@@ -12,11 +13,14 @@ import StudyResult from "../../../../../components/menus/StudyResult";
 
 import { theme } from "../../../../theme";
 
+import { addCompletedTest } from "../../../../utils/userProgress";
+
 type Props = StackScreenProps<TestsStackParamList, "TakeTest">;
 type AnswerKey = "answer_1" | "answer_2" | "answer_3" | "answer_4";
 
 export default function TakeTest({ navigation, route }: Props) {
     const insets = useSafeAreaInsets();
+    const db = useSQLiteContext();
     const test = route.params.test;
 
     const { questions, loading } = useQuestions(test.id);
@@ -133,7 +137,7 @@ export default function TakeTest({ navigation, route }: Props) {
             <View style={{ gap: theme.spacing.md, padding: theme.spacing.sm }}>
                 <TouchableOpacity
                     style={[ styles.moveButton, styles.shadow ]}
-                    onPress={() => {
+                    onPress={async () => {
                         const userAnswerString = selectedAnswers
                             .map(v => v ? "1" : "0")
                             .join("");
@@ -177,6 +181,7 @@ export default function TakeTest({ navigation, route }: Props) {
                         if (currentIndex < questions.length - 1) {
                             setCurrentIndex(prev => prev + 1);
                         } else {
+                            await addCompletedTest(db, test.id, Math.round(correctAnswersCount * 100 / questions.length))
                             setFinished(true);
                         }
                     }}
