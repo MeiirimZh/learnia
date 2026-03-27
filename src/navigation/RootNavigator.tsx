@@ -7,7 +7,6 @@ import DatabaseInitializer from "../database/DatabaseInitializer";
 import MainTabs from "./MainTabs";
 import ColorPick from "../screens/main/others/ColorPick";
 import ViewCategory from "../screens/main/categories/ViewCategory";
-import Settings from "../screens/main/others/Settings";
 
 import { RootStackParamList } from "./types";
 
@@ -50,19 +49,6 @@ export default function RootNavigator() {
                         name="ViewCategory"
                         component={ ViewCategory } 
                         options={{
-                            headerStyle: {
-                                backgroundColor: theme.colors.primary
-                            },
-                            headerTintColor: theme.colors.onPrimary,
-                            headerTitleStyle: {
-                                color: theme.colors.onPrimary
-                            }
-                        }} />
-                    <Stack.Screen
-                        name="Settings"
-                        component={ Settings }
-                        options={{
-                            title: 'Настройки',
                             headerStyle: {
                                 backgroundColor: theme.colors.primary
                             },
