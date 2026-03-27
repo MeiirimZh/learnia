@@ -3,21 +3,24 @@ import { useState, useEffect, useLayoutEffect } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 import { SetsStackParamList } from "../../../../navigation/types";
 
+import { useSQLiteContext } from "expo-sqlite";
 import useCards from "../../../../hooks/useCards";
 
-import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
+import { StyleSheet, View, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import AppText from "../../../../../components/AppText";
 import StudyResult from "../../../../../components/menus/StudyResult";
 
 import { theme } from "../../../../theme";
 
 import { shuffle } from "../../../../utils/random";
+import { addStudiedCard } from "../../../../utils/userProgress";
 
 type Props = StackScreenProps<SetsStackParamList, "MatchingSet">;
 
 export default function MatchingSet({ navigation, route }: Props) {
     const set = route.params.set;
 
+    const db = useSQLiteContext();
     const { cards, loading } = useCards(set?.id);
 
     const [ shuffledCards, setShuffledCards ] = useState<typeof cards>([]);
@@ -30,7 +33,8 @@ export default function MatchingSet({ navigation, route }: Props) {
     const [ wrongAnswersCount, setWrongAnswersCount ] = useState<number>(0);
     const [ correctAnswersCount, setCorrectAnswersCount ] = useState<number>(0);
 
-    const removeCard = (id: number) => {
+    const removeCard = async (id: number) => {
+        await addStudiedCard(db, id);
         setFrontCards(prev => prev.filter(card => card.id !== id));
         setBackCards(prev => prev.filter(card => card.id !== id));
     };
@@ -75,6 +79,14 @@ export default function MatchingSet({ navigation, route }: Props) {
             title: set?.title
         });
     }, []);
+
+    if (loading) {
+        return (
+            <View style={ styles.container }>
+                <ActivityIndicator size="large" color={ theme.colors.primary } />
+            </View>
+        );
+    }
 
     if (finished) {
         return (

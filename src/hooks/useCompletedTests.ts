@@ -4,7 +4,7 @@ import { useSQLiteContext } from "expo-sqlite";
 
 import { CompletedTest } from "../../types";
 
-const useCompletedTests = async () => {
+const useCompletedTests = () => {
     const [ completedTests, setCompletedTests ] = useState<CompletedTest[]>([]);
     const [ loading, setLoading ] = useState<boolean>(true);
     const db = useSQLiteContext();

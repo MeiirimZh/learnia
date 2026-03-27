@@ -3,9 +3,10 @@ import { useState, useEffect, useLayoutEffect } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 import { SetsStackParamList } from "../../../../navigation/types";
 
+import { useSQLiteContext } from "expo-sqlite";
 import useCards from "../../../../hooks/useCards";
 
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import AppText from "../../../../../components/AppText";
 import StudyResult from "../../../../../components/menus/StudyResult";
 
@@ -14,12 +15,14 @@ import { theme } from "../../../../theme";
 import { Card } from "../../../../../types";
 
 import { shuffle, getRandomNElementsFromArray } from "../../../../utils/random";
+import { addStudiedCard } from "../../../../utils/userProgress";
 
 type Props = StackScreenProps<SetsStackParamList, "SelectDefinitionSet">;
 
 export default function SelectDefinitionSet({ navigation, route }: Props) {
     const set = route.params.set;
 
+    const db = useSQLiteContext();
     const { cards, loading } = useCards(set?.id);
 
     const [ shuffledCards, setShuffledCards ] = useState<typeof cards>([]);
@@ -52,11 +55,13 @@ export default function SelectDefinitionSet({ navigation, route }: Props) {
         }
     };
 
-    const markCorrectAnswer = () => {
+    const markCorrectAnswer = async () => {
+        await addStudiedCard(db, shuffledCards[currentIndex]?.id);         
         setCorrectAnswersCount(correctAnswersCount + 1);
     };
 
-    const markWrongAnswer = () => {
+    const markWrongAnswer = async () => {
+        await addStudiedCard(db, shuffledCards[currentIndex]?.id);
         setWrongAnswersCount(wrongAnswersCount + 1);
     };
 
@@ -78,6 +83,14 @@ export default function SelectDefinitionSet({ navigation, route }: Props) {
             title: set?.title
         });
     }, []);
+
+    if (loading) {
+        return (
+            <View style={ styles.container }>
+                <ActivityIndicator size="large" color={ theme.colors.primary } />
+            </View>
+        );
+    }
 
     if (finished) {
         return (

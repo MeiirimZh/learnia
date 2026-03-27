@@ -4,7 +4,7 @@ import { useSQLiteContext } from "expo-sqlite";
 
 import { StudiedCard } from "../../types";
 
-const useStudiedCards = async () => {
+const useStudiedCards = () => {
     const [ studiedCards, setStudiedCards ] = useState<StudiedCard[]>([]);
     const [ loading, setLoading ] = useState<boolean>(true);
     const db = useSQLiteContext();
