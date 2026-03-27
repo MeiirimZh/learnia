@@ -9,6 +9,7 @@ import * as TestsQueries from "../../../database/queries/TestsQueries";
 import useTests from "../../../hooks/useTests";
 import useCategories from "../../../hooks/useCategories";
 import useQuestions from "../../../hooks/useQuestions";
+import useCompletedTests from "../../../hooks/useCompletedTests";
 
 import { Question } from "../../../../types";
 
@@ -26,6 +27,7 @@ import { theme } from "../../../theme";
 
 import { getTodayFormatted } from "../../../utils/date";
 import { shareJsonTests, handleTestsImport } from "../../../utils/sharing";
+import { deleteCompletedTest } from "../../../utils/userProgress";
 
 type TestsNav = StackNavigationProp<TestsStackParamList, "TestsList">;
 type RootNav = StackNavigationProp<RootStackParamList>;
@@ -41,6 +43,7 @@ export default function TestsList({ navigation }: Props) {
     const { tests, loadTests } = useTests();
     const { categories, loadCategories } = useCategories();
     const { questions, loadQuestions } = useQuestions();
+    const { completedTests, loadCompletedTests } = useCompletedTests();
 
     const [ isTestModalVisible, setIsTestModalVisible ] = useState<boolean>(false);
     const [ isChoiceModalVisible, setIsChoiceModalVisible ] = useState<boolean>(false);
@@ -135,8 +138,10 @@ export default function TestsList({ navigation }: Props) {
         await db.runAsync(TestsQueries.DELETE, [
             id
         ]);
+        await deleteCompletedTest(db, completedTests, id);
 
         await loadTests();
+        await loadCompletedTests();
         reset();
     };
 

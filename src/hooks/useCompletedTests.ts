@@ -10,6 +10,8 @@ const useCompletedTests = () => {
     const db = useSQLiteContext();
 
     const loadCompletedTests = async () => {
+        setLoading(true);
+
         try {
             const results = await db.getAllAsync<CompletedTest>("SELECT * FROM completed_tests ORDER BY id;");
             setCompletedTests(results);

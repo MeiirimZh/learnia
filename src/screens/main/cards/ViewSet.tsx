@@ -7,15 +7,17 @@ import { SetsStackParamList } from "../../../navigation/types";
 
 import { useSQLiteContext } from "expo-sqlite";
 import useCards from "../../../hooks/useCards";
+import useStudiedCards from "../../../hooks/useStudiedCards";
 import * as CardsQueries from "../../../database/queries/CardsQueries";
 
 import { StyleSheet, View, FlatList } from "react-native";
-import AppText from "../../../../components/AppText";
 import CardItem from "../../../../components/items/CardItem";
 import FloatingActions from "../../../../components/menus/FloatingActions";
 import FloatingActionsButton from "../../../../components/buttons/FloatingActionsButton";
 
 import { theme } from "../../../theme";
+
+import { deleteStudiedCards } from "../../../utils/userProgress";
 
 type Props = StackScreenProps<SetsStackParamList, "ViewSet">;
 
@@ -24,6 +26,7 @@ export default function ViewSet({ navigation, route }: Props) {
     const db = useSQLiteContext();
     const { set } = route.params;
     const { cards, loadCards } = useCards(set.id);
+    const { studiedCards, loadStudiedCards } = useStudiedCards(set.id);
 
     const [ isDeleteMode, setIsDeleteMode ] = useState<boolean>(false);
     const [ cardsToDelete, setCardsToDelete ] = useState<number[]>([]);
@@ -55,7 +58,10 @@ export default function ViewSet({ navigation, route }: Props) {
             id
         ]);
 
+        await deleteStudiedCards(db, studiedCards, id);
+
         await loadCards();
+        await loadStudiedCards();
     };
 
     return (
