@@ -6,6 +6,7 @@ import { RootStackParamList, TestsStackParamList } from "../../../navigation/typ
 
 import { useSQLiteContext } from "expo-sqlite";
 import * as TestsQueries from "../../../database/queries/TestsQueries";
+import * as QuestionsQueries from "../../../database/queries/QuestionsQueries";
 import useTests from "../../../hooks/useTests";
 import useCategories from "../../../hooks/useCategories";
 import useQuestions from "../../../hooks/useQuestions";
@@ -135,6 +136,14 @@ export default function TestsList({ navigation }: Props) {
     };
 
     const deleteTest = async () => {
+        questions.forEach(async (question) => {
+            if (question.test_id === id) {
+                await db.runAsync(QuestionsQueries.DELETE, [
+                    question.id
+                ]);
+            }
+        });
+
         await db.runAsync(TestsQueries.DELETE, [
             id
         ]);

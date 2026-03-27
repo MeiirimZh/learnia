@@ -14,7 +14,15 @@ export const addStudiedCard = async (db: SQLiteDatabase, cardId: number, is_corr
     ]);
 };
 
-export const deleteStudiedCards = async (db: SQLiteDatabase, studiedCards: StudiedCard[], cardId: number) => {
+export const deleteStudiedCards = async (db: SQLiteDatabase, studiedCards: StudiedCard[]) => {
+    studiedCards.forEach(async (studiedCard) => {
+        await db.runAsync(StudiedCardsQueries.DELETE, [
+            studiedCard.id
+        ]);
+    });
+};
+
+export const deleteStudiedCardsById = async (db: SQLiteDatabase, studiedCards: StudiedCard[], cardId: number) => {
     studiedCards.forEach(async (studiedCard) => {
         if (studiedCard.card_id === cardId) {
             await db.runAsync(StudiedCardsQueries.DELETE, [

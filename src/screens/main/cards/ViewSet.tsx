@@ -17,7 +17,7 @@ import FloatingActionsButton from "../../../../components/buttons/FloatingAction
 
 import { theme } from "../../../theme";
 
-import { deleteStudiedCards } from "../../../utils/userProgress";
+import { deleteStudiedCardsById } from "../../../utils/userProgress";
 
 type Props = StackScreenProps<SetsStackParamList, "ViewSet">;
 
@@ -58,7 +58,7 @@ export default function ViewSet({ navigation, route }: Props) {
             id
         ]);
 
-        await deleteStudiedCards(db, studiedCards, id);
+        await deleteStudiedCardsById(db, studiedCards, id);
 
         await loadCards();
         await loadStudiedCards();

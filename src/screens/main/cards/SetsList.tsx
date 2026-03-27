@@ -6,9 +6,11 @@ import { RootStackParamList, SetsStackParamList } from "../../../navigation/type
 
 import { useSQLiteContext } from "expo-sqlite";
 import * as SetsQueries from "../../../database/queries/SetsQueries";
+import * as CardsQueries from "../../../database/queries/CardsQueries";
 import useSets from "../../../hooks/useSets";
 import useCategories from "../../../hooks/useCategories";
 import useCards from "../../../hooks/useCards";
+import useStudiedCards from "../../../hooks/useStudiedCards";
 
 import { Set, Card } from "../../../../types";
 
@@ -125,11 +127,21 @@ export default function SetsList({ navigation }: Props) {
     };
 
     const deleteSet = async () => {
-        await db.runAsync(SetsQueries.DELETE, [
-            id
-        ]);
+        await db.runAsync(`
+            DELETE FROM studied_cards 
+            WHERE card_id IN (
+                SELECT id FROM cards WHERE set_id = ?
+            )
+        `, [id]);
+
+        await db.runAsync(`
+            DELETE FROM cards WHERE set_id = ?
+        `, [id]);
+
+        await db.runAsync(SetsQueries.DELETE, [id]);
 
         await loadSets();
+        await loadCards();
         reset();
     };
 
