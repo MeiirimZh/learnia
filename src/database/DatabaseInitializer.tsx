@@ -10,6 +10,8 @@ import * as SetsQueries from "./queries/SetsQueries";
 import * as CardsQueries from "./queries/CardsQueries";
 import * as TestsQueries from "./queries/TestsQueries";
 import * as QuestionsQueries from "./queries/QuestionsQueries";
+import * as StudiedCards from "./queries/StudiedCardsQueries";
+import * as CompletedTests from "./queries/CompletedTestsQueries";
 import { seedDatabase } from "./Seed";
 
 type Props = {
@@ -45,6 +47,12 @@ export default function DatabaseInitializer({ onReady }: Props) {
 
                 await db.execAsync(QuestionsQueries.DROP_TABLE);
                 await db.execAsync(QuestionsQueries.CREATE_TABLE);
+
+                await db.execAsync(StudiedCards.DROP_TABLE);
+                await db.execAsync(StudiedCards.CREATE_TABLE);
+
+                await db.execAsync(CompletedTests.DROP_TABLE);
+                await db.execAsync(CompletedTests.CREATE_TABLE);
 
                 await seedDatabase(db);
 
