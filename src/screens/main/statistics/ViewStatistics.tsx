@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
 import useCards from "../../../hooks/useCards";
 import useTests from "../../../hooks/useTests";
 import useStudiedCards from "../../../hooks/useStudiedCards";
 import useCompletedTests from "../../../hooks/useCompletedTests";
 
-import { StyleSheet, View, ScrollView, FlatList, TouchableOpacity } from "react-native";
+import { StyleSheet, View, ScrollView, TouchableOpacity } from "react-native";
 import AppText from "../../../../components/AppText";
 import ProgressBar from "../../../../components/statistics/ProgressBar";
+import { BarChart } from "react-native-gifted-charts";
 
 import { theme } from "../../../theme";
+
+import { getCardsWeekProgress, getTestsWeekProgress } from "../../../utils/userProgress";
+
+import { WeekProgress } from "../../../../types";
 
 type Mode = "today" | "week" | "all time";
 
@@ -18,6 +24,9 @@ export default function ViewStatistics() {
     const { tests } = useTests();
     const { studiedCards } = useStudiedCards();
     const { completedTests } = useCompletedTests();
+
+    const [ cardsWeekProgress, setCardsWeekProgress ] = useState<WeekProgress | null>(null);
+    const [ testsWeekProgress, setTestsWeekProgress ] = useState<WeekProgress | null>(null);
 
     const [ mode, setMode ] = useState<Mode>("today");
 
@@ -29,12 +38,28 @@ export default function ViewStatistics() {
         return total > 0 ? Math.min(completed / total, 1) : 0;
     };
 
+    useFocusEffect(
+        useCallback(() => {
+            return () => {
+                setMode("today");
+            };
+        }, [])
+    );
+
+    useEffect(() => {
+        setCardsWeekProgress(getCardsWeekProgress(studiedCards));
+    }, [cards, studiedCards]);
+
+    useEffect(() => {
+        setTestsWeekProgress(getTestsWeekProgress(completedTests));
+    }, [tests, completedTests]);
+
     if (loading) {
         return <AppText>Загрузка...</AppText>;
     }
 
     return (
-        <ScrollView contentContainerStyle={ styles.container }>
+        <View style={ styles.container }>
             <View style={ styles.navMenu }>
                 <TouchableOpacity 
                     style={[
@@ -89,7 +114,46 @@ export default function ViewStatistics() {
             </View>
             </>
             }
-        </ScrollView>
+
+            { mode === "week" &&
+            <ScrollView contentContainerStyle={{ gap: theme.spacing.lg }} showsVerticalScrollIndicator={ false }>
+            <View style={ styles.block }>
+                <AppText style={ styles.headerText }>Карточек изучено</AppText>
+                <BarChart 
+                    data={[ 
+                        { value: cardsWeekProgress?.monday, label: 'Пн', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: cardsWeekProgress?.tuesday, label: 'Вт', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: cardsWeekProgress?.wednesday, label: 'Ср', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: cardsWeekProgress?.thursday, label: 'Чт', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: cardsWeekProgress?.friday, label: 'Пт', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: cardsWeekProgress?.saturday, label: 'Сб', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: cardsWeekProgress?.sunday, label: 'Вс', labelTextStyle: { color: theme.colors.textMuted } },
+                    ]}
+                    barWidth={ 10 }
+                    frontColor={ theme.colors.secondary }
+                    noOfSections={ 3 }
+                    isAnimated />
+            </View>
+            <View style={ styles.block }>
+                <AppText style={ styles.headerText }>Тестов пройдено</AppText>
+                <BarChart 
+                    data={[ 
+                        { value: testsWeekProgress?.monday, label: 'Пн', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: testsWeekProgress?.tuesday, label: 'Вт', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: testsWeekProgress?.wednesday, label: 'Ср', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: testsWeekProgress?.thursday, label: 'Чт', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: testsWeekProgress?.friday, label: 'Пт', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: testsWeekProgress?.saturday, label: 'Сб', labelTextStyle: { color: theme.colors.textMuted } },
+                        { value: testsWeekProgress?.sunday, label: 'Вс', labelTextStyle: { color: theme.colors.textMuted } },
+                    ]}
+                    barWidth={ 10 }
+                    frontColor={ theme.colors.secondary }
+                    noOfSections={ 3 }
+                    isAnimated />
+            </View>
+            </ScrollView> 
+            }
+        </View>
     )
 }
 

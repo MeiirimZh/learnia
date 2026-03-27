@@ -63,6 +63,16 @@ export type CompletedTest = {
     completed_at: string
 };
 
+export type WeekProgress = {
+    monday: number,
+    tuesday: number,
+    wednesday: number,
+    thursday: number,
+    friday: number,
+    saturday: number,
+    sunday: number
+};
+
 export type TabParamList = {
     Notes: undefined;
     Cards: undefined;

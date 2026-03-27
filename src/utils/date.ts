@@ -17,6 +17,13 @@ export function getNowFormatted(): string {
     return `${year}-${month}-${day}-${hour}-${minute}-${second}`;
 };
 
+export function getFormattedDate(date: Date): string {
+    const day = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`;
+    const month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`;
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+};
+
 export function getYearMonthDayFromDateString(dateString: string): Array<number> {
     const date = new Date(dateString);
     return [ date.getFullYear(), date.getMonth() + 1, date.getDate() ] as const;
@@ -34,4 +41,34 @@ export function getFormattedMonthDayFromDateString(dateString: string): string {
         day: "numeric",
         month: "short"
     });
+};
+
+export function getCurrentWeek() {
+    const now = new Date();
+
+    const day = now.getDay();
+    const diffToMonday = (day === 0 ? -6 : 1 - day);
+
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + diffToMonday);
+
+    const tuesday = new Date(now);
+    tuesday.setDate(monday.getDate() + 1);
+
+    const wednesday = new Date(now);
+    wednesday.setDate(monday.getDate() + 2);
+
+    const thursday = new Date(now);
+    thursday.setDate(monday.getDate() + 3);
+
+    const friday = new Date(now);
+    friday.setDate(monday.getDate() + 4);
+
+    const saturday = new Date(now);
+    saturday.setDate(monday.getDate() + 5);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    return { monday, tuesday, wednesday, thursday, friday, saturday, sunday };
 };
