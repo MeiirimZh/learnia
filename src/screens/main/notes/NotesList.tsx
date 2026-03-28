@@ -7,6 +7,7 @@ import * as NotesQueries from "../../../database/queries/NotesQueries";
 
 import { StyleSheet, View, FlatList } from "react-native";
 import NoteItem from "../../../../components/items/NoteItem";
+import EmptyPage from "../../../../components/menus/EmptyPage";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { NotesStackParamList } from "../../../navigation/types";
@@ -56,6 +57,7 @@ export default function NotesList({ navigation }: Props) {
 
     return (
         <View style={ styles.container }>
+            { notes.length > 0 ?
             <FlatList 
                 data={ notes } 
                 numColumns={ 2 } 
@@ -98,8 +100,10 @@ export default function NotesList({ navigation }: Props) {
                     )
                 }}
                 ItemSeparatorComponent={() => <View style={{ height: theme.spacing.md }} />}
-                showsVerticalScrollIndicator={ false } />
-
+                showsVerticalScrollIndicator={ false } /> :
+                
+            <EmptyPage msg="Создайте свои первые заметки" />
+            }
             <FloatingActions>
                 { isDeleteMode ?
                     <FloatingActionsButton name='trash' color={ theme.colors.text } onPress={async () => {

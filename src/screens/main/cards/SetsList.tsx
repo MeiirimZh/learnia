@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -6,11 +6,9 @@ import { RootStackParamList, SetsStackParamList } from "../../../navigation/type
 
 import { useSQLiteContext } from "expo-sqlite";
 import * as SetsQueries from "../../../database/queries/SetsQueries";
-import * as CardsQueries from "../../../database/queries/CardsQueries";
 import useSets from "../../../hooks/useSets";
 import useCategories from "../../../hooks/useCategories";
 import useCards from "../../../hooks/useCards";
-import useStudiedCards from "../../../hooks/useStudiedCards";
 
 import { Set, Card } from "../../../../types";
 
@@ -24,6 +22,7 @@ import CategoryItem from "../../../../components/items/CategoryItem";
 import RoundIcon from "../../../../components/icons/RoundIcon";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
+import EmptyPage from "../../../../components/menus/EmptyPage";
 
 import { theme } from "../../../theme";
 
@@ -167,6 +166,7 @@ export default function SetsList({ navigation }: Props) {
 
     return (
         <View style={ styles.container }>
+            { cards.length > 0 ?
             <FlatList
                 style={{ flex: 1 }}
                 data={ sets }
@@ -215,7 +215,10 @@ export default function SetsList({ navigation }: Props) {
                     )
                 }}
                 ItemSeparatorComponent={() => ( <View style={{ height: theme.spacing.md }} /> )}
-                showsVerticalScrollIndicator={ false } />
+                showsVerticalScrollIndicator={ false } /> :
+                
+            <EmptyPage msg="Создайте свои первые карточки" />
+            }
 
             <FloatingActions>
                 <FloatingActionsButton name="add" color={ theme.colors.text } onPress={() => setIsSetModalVisible(true)} />

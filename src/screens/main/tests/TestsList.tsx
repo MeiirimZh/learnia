@@ -23,6 +23,7 @@ import FloatingActions from '../../../../components/menus/FloatingActions';
 import FloatingActionsButton from '../../../../components/buttons/FloatingActionsButton';
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
+import EmptyPage from "../../../../components/menus/EmptyPage";
 
 import { theme } from "../../../theme";
 
@@ -166,6 +167,7 @@ export default function TestsList({ navigation }: Props) {
 
     return (
         <View style={ styles.container }>
+            { tests.length > 0 ?
             <FlatList
                 data={ tests }
                 renderItem={({ item }) => {
@@ -208,7 +210,10 @@ export default function TestsList({ navigation }: Props) {
                     )  
                 }}
                 ItemSeparatorComponent={() => ( <View style={{ height: theme.spacing.md }} /> )}
-                showsVerticalScrollIndicator={ false } />
+                showsVerticalScrollIndicator={ false } /> :
+
+            <EmptyPage msg="Создайте свои первые тесты" />
+            }
 
             <FloatingActions>
                 <FloatingActionsButton name="add" color={ theme.colors.text } onPress={() => {
