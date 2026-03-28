@@ -7,6 +7,9 @@ import AppText from "../../../components/AppText";
 import TextButton from "../../../components/buttons/TextButton";
 import AppModal from "../../../components/menus/AppModal";
 
+import LogoIcon from "../../../assets/svg/LogoIcon";
+import NameLogoIcon from "../../../assets/svg/NameLogoIcon";
+
 import { theme } from "../../theme";
 
 export default function SignIn() {
@@ -16,6 +19,9 @@ export default function SignIn() {
 
     return (
         <View style={ styles.container }>
+            <NameLogoIcon
+                width={ 150 }
+                height={ 150 } />
             <TextButton text="Войти" onPress={ () => setLoggedIn(true) } onLongPress={ () => {} } />
             <TouchableOpacity 
                 style={[ styles.aboutButton, { bottom: insets.bottom + theme.spacing.md } ]}
