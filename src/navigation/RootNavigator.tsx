@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useAuthStore } from "../store/useAuthStore";
+
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { SQLiteProvider } from "expo-sqlite";
 import DatabaseInitializer from "../database/DatabaseInitializer";
 
 import MainTabs from "./MainTabs";
+import AuthStack from "./AuthStack";
 import ColorPick from "../screens/main/others/ColorPick";
 import ViewCategory from "../screens/main/categories/ViewCategory";
 
@@ -16,12 +19,19 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
     const [ ready, setReady ] = useState<boolean>(false);
+    const loggedIn = useAuthStore((state) => state.loggedIn);
 
     if (!ready) {
         return (
             <DatabaseInitializer onReady={() => setReady(true)} />
         )
     }
+
+    if (!loggedIn) {
+        return (
+            <AuthStack />
+        )
+    } 
 
     return (
         <SQLiteProvider
