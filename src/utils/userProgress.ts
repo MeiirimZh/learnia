@@ -4,7 +4,7 @@ import * as CompletedTestsQueries from "../database/queries/CompletedTestsQuerie
 
 import { getNowFormatted, getCurrentWeek, getFormattedDate } from "./date";
 
-import { StudiedCard, CompletedTest, WeekProgress } from "../../types";
+import { StudiedCard, CompletedTest, WeekProgress, Category, Card, Test, Set } from "../../types";
 
 export const addStudiedCard = async (db: SQLiteDatabase, cardId: number, is_correct: 1 | 0) => {
     await db.runAsync(StudiedCardsQueries.INSERT, [
@@ -136,4 +136,26 @@ export const deleteCompletedTest = async (db: SQLiteDatabase, completedTests: Co
             ]);
         }
     });
+};
+
+export const getDistributionByCategories = (
+    categories: Category[],
+    cards: Card[],
+    sets: Set[],
+    tests: Test[]
+) => {
+    const result: any = {};
+    categories.forEach((category) => {
+        result[category.id] = 0;
+    });
+    
+    cards.forEach((card) => {
+        const set = sets.find((set) => card.set_id === set.id);
+
+        if (set) {
+            result[set.category_id] += 1;
+        }
+    });
+
+    return result;
 };
