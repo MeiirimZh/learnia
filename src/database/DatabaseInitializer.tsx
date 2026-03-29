@@ -1,3 +1,5 @@
+import Constants from "expo-constants";
+
 import { SQLiteProvider } from "expo-sqlite"
 
 import { View, ActivityIndicator } from "react-native";
@@ -17,6 +19,8 @@ import { seedDatabase } from "./seed/Seed";
 type Props = {
     onReady: () => void;
 }
+
+const variant = Constants.expoConfig?.extra?.APP_VARIANT;
 
 export default function DatabaseInitializer({ onReady }: Props) {
     return (
@@ -54,7 +58,9 @@ export default function DatabaseInitializer({ onReady }: Props) {
                 await db.execAsync(CompletedTests.DROP_TABLE);
                 await db.execAsync(CompletedTests.CREATE_TABLE);
 
-                await seedDatabase(db);
+                if (variant === "demo") {
+                    await seedDatabase(db);
+                }
 
                 onReady();
             }}>
