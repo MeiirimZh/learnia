@@ -24,11 +24,11 @@ type Mode = "today" | "week" | "all time";
 
 export default function ViewStatistics() {
     const { notes } = useNotes();
-    const { categories, loading } = useCategories();
+    const { categories } = useCategories();
     const { sets } = useSets();
     const { cards } = useCards();
     const { tests } = useTests();
-    const { studiedCards } = useStudiedCards();
+    const { studiedCards, loading } = useStudiedCards();
     const { completedTests } = useCompletedTests();
 
     const [ cardsWeekProgress, setCardsWeekProgress ] = useState<WeekProgress | null>(null);
@@ -113,8 +113,8 @@ export default function ViewStatistics() {
             { mode === "today" &&
             <>
             <View style={ styles.block }>
-                <View style={ styles.headerWithNumbers }>
-                    <View>
+                <View style={[ styles.headerWithNumbers ]}>
+                    <View style={{ flex: 1, flexShrink: 1 }}>
                         <AppText style={ styles.headerText }>Карточек изучено</AppText>
                         <AppText style={ styles.descText }>Количество изученных карточек за текущий день</AppText>
                     </View>
@@ -124,7 +124,7 @@ export default function ViewStatistics() {
             </View>
             <View style={ styles.block }>
                 <View style={ styles.headerWithNumbers }>
-                    <View>
+                    <View style={{ flex: 1, flexShrink: 1 }}>
                         <AppText style={ styles.headerText }>Тестов пройдено</AppText>
                         <AppText style={ styles.descText }>Количество пройденных тестов за текущий день</AppText>
                     </View>
