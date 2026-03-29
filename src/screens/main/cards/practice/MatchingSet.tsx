@@ -116,7 +116,9 @@ export default function MatchingSet({ navigation, route }: Props) {
 
     return (
         <View style={[ styles.container, { paddingBottom: insets.bottom } ]}>
-            <FlatList 
+            <FlatList
+                style={{ padding: theme.spacing.sm }}
+                showsVerticalScrollIndicator={ false }
                 data={ frontCards }
                 renderItem={({ item }) => (
                     <TouchableOpacity
@@ -134,6 +136,8 @@ export default function MatchingSet({ navigation, route }: Props) {
                 )}
                 ItemSeparatorComponent={() => <View style={{ height: theme.spacing.md }} />} />
             <FlatList 
+                style={{ padding: theme.spacing.sm }}
+                showsVerticalScrollIndicator={ false }
                 data={ backCards }
                 renderItem={({ item }) => (
                     <TouchableOpacity
@@ -164,7 +168,15 @@ const styles = StyleSheet.create({
     cardButton: {
         justifyContent:  'center',
         alignItems: 'center',
+
         borderRadius: 5,
+
+        elevation: 5,
+        shadowColor: theme.colors.shadow,
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.12,
+        shadowRadius: 10,
+
         padding: theme.spacing.md
     }
 });
