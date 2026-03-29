@@ -25,17 +25,19 @@ export default function TakeTest({ navigation, route }: Props) {
 
     const { questions, loading } = useQuestions(test.id);
 
-    const [currentIndex, setCurrentIndex] = useState<number>(0);
-    const [isMultipleChoice, setIsMultipleChoice] = useState<boolean>(false);
-    const [finished, setFinished] = useState<boolean>(false);
+    const [ currentIndex, setCurrentIndex ] = useState<number>(0);
+    const [ isMultipleChoice, setIsMultipleChoice ] = useState<boolean>(false);
+    const [ finished, setFinished ] = useState<boolean>(false);
 
-    const [wrongAnswersCount, setWrongAnswersCount] = useState<number>(0);
-    const [correctAnswersCount, setCorrectAnswersCount] = useState<number>(0);
+    const [ wrongAnswersCount, setWrongAnswersCount ] = useState<number>(0);
+    const [ correctAnswersCount, setCorrectAnswersCount ] = useState<number>(0);
 
-    const [selectedAnswers, setSelectedAnswers] = useState<boolean[]>([false, false, false, false]);
+    const [ selectedAnswers, setSelectedAnswers ] = useState<boolean[]>([false, false, false, false]);
 
-    const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
-    const [answersResult, setAnswersResult] = useState<Record<number, number>>({});
+    const [ userAnswers, setUserAnswers ] = useState<Record<number, string>>({});
+    const [ answersResult, setAnswersResult ] = useState<Record<number, number>>({});
+
+    const [ answerGiven, setAnswerGiven ] = useState<boolean>(false);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -120,7 +122,11 @@ export default function TakeTest({ navigation, route }: Props) {
                                         : theme.colors.bgLight
                                 }
                             ]}
-                            onPress={() => toggleAnswer(i)}
+                            onPress={() => {
+                                if (!answerGiven) {
+                                    toggleAnswer(i)}
+                                }
+                            }
                         >
                             <AppText style={{
                                 color: selectedAnswers[i]
@@ -138,56 +144,63 @@ export default function TakeTest({ navigation, route }: Props) {
                 <TouchableOpacity
                     style={[ styles.moveButton, styles.shadow ]}
                     onPress={async () => {
-                        const userAnswerString = selectedAnswers
-                            .map(v => v ? "1" : "0")
-                            .join("");
+                        if (!answerGiven) {
+                            const userAnswerString = selectedAnswers
+                                .map(v => v ? "1" : "0")
+                                .join("");
 
-                        const correctAnswerString =
-                            `${questions[currentIndex].is_answer_1_correct}` +
-                            `${questions[currentIndex].is_answer_2_correct}` +
-                            `${questions[currentIndex].is_answer_3_correct}` +
-                            `${questions[currentIndex].is_answer_4_correct}`;
+                            const correctAnswerString =
+                                `${questions[currentIndex].is_answer_1_correct}` +
+                                `${questions[currentIndex].is_answer_2_correct}` +
+                                `${questions[currentIndex].is_answer_3_correct}` +
+                                `${questions[currentIndex].is_answer_4_correct}`;
 
-                        const isCorrect = userAnswerString === correctAnswerString;
+                            const isCorrect = userAnswerString === correctAnswerString;
 
-                        const prevResult = answersResult[currentIndex];
+                            const prevResult = answersResult[currentIndex];
 
-                        if (prevResult !== undefined) {
-                            if (prevResult === 1) {
-                                setCorrectAnswersCount(prev => prev - 1);
-                            } else {
-                                setWrongAnswersCount(prev => prev - 1);
+                            if (prevResult !== undefined) {
+                                if (prevResult === 1) {
+                                    setCorrectAnswersCount(prev => prev - 1);
+                                } else {
+                                    setWrongAnswersCount(prev => prev - 1);
+                                }
                             }
-                        }
 
-                        setUserAnswers(prev => ({
-                            ...prev,
-                            [currentIndex]: userAnswerString
-                        }));
+                            setUserAnswers(prev => ({
+                                ...prev,
+                                [currentIndex]: userAnswerString
+                            }));
 
-                        setAnswersResult(prev => ({
-                            ...prev,
-                            [currentIndex]: isCorrect ? 1 : 0
-                        }));
+                            setAnswersResult(prev => ({
+                                ...prev,
+                                [currentIndex]: isCorrect ? 1 : 0
+                            }));
 
-                        if (isCorrect) {
-                            setCorrectAnswersCount(prev => prev + 1);
+                            if (isCorrect) {
+                                setCorrectAnswersCount(prev => prev + 1);
+                            } else {
+                                setWrongAnswersCount(prev => prev + 1);
+                            }
+
+                            setSelectedAnswers([false, false, false, false]);
+
+                            setAnswerGiven(true);
                         } else {
-                            setWrongAnswersCount(prev => prev + 1);
-                        }
-
-                        setSelectedAnswers([false, false, false, false]);
-
-                        if (currentIndex < questions.length - 1) {
-                            setCurrentIndex(prev => prev + 1);
-                        } else {
-                            await addCompletedTest(db, test.id, Math.round(correctAnswersCount * 100 / questions.length))
-                            setFinished(true);
+                            if (currentIndex < questions.length - 1) {
+                                setCurrentIndex(prev => prev + 1);
+                                setAnswerGiven(false);
+                            } else {
+                                await addCompletedTest(db, test.id, Math.round(correctAnswersCount * 100 / questions.length))
+                                setFinished(true);
+                            }
                         }
                     }}
                 >
-                    <AppText style={{ color: theme.colors.onPrimary }}>
-                        Продолжить
+                    <AppText style={{ 
+                        color: theme.colors.onPrimary
+                    }}>
+                        { answerGiven ? "Продолжить" : "Ответить" }
                     </AppText>
                 </TouchableOpacity>
 
@@ -203,6 +216,7 @@ export default function TakeTest({ navigation, route }: Props) {
                             }
 
                             setCurrentIndex(prevIndex);
+                            setAnswerGiven(true);
                         }}
                     >
                         <AppText style={{ color: theme.colors.onPrimary }}>
@@ -213,15 +227,29 @@ export default function TakeTest({ navigation, route }: Props) {
             </View>
 
             {currentResult !== undefined && (
-                <AppText
-                    style={{
-                        color: currentResult === 1
-                            ? theme.colors.success
-                            : theme.colors.danger
-                    }}
-                >
-                    {currentResult === 1 ? "Правильно" : "Неправильно"}
-                </AppText>
+                <View style={{ gap: theme.spacing.md }}>
+                    <AppText
+                        style={{
+                            alignSelf: 'center',
+                            fontFamily: theme.fonts.semibold,
+                            fontSize: 16,
+                            color: currentResult === 1
+                                ? theme.colors.success
+                                : theme.colors.danger
+                        }}
+                    >
+                        { currentResult === 1 ? "Правильно!" : "Неправильно!" }
+                    </AppText>
+                    { currentResult === 0 &&
+                    <View>
+                        <AppText style={{ alignSelf: 'center', fontFamily: theme.fonts.semibold }}>Правильные ответы:</AppText>
+                        { !!questions[currentIndex].is_answer_1_correct && <AppText style={{ alignSelf: 'center' }}>{ questions[currentIndex].answer_1 }</AppText> }
+                        { !!questions[currentIndex].is_answer_2_correct && <AppText style={{ alignSelf: 'center' }}>{ questions[currentIndex].answer_2 }</AppText> }
+                        { !!questions[currentIndex].is_answer_3_correct && <AppText style={{ alignSelf: 'center' }}>{ questions[currentIndex].answer_3 }</AppText> }
+                        { !!questions[currentIndex].is_answer_4_correct && <AppText style={{ alignSelf: 'center' }}>{ questions[currentIndex].answer_4 }</AppText> }
+                    </View>
+                    }
+                </View>
             )}
         </View>
     );
