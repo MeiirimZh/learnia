@@ -12,7 +12,7 @@ import * as TestsQueries from "./queries/TestsQueries";
 import * as QuestionsQueries from "./queries/QuestionsQueries";
 import * as StudiedCards from "./queries/StudiedCardsQueries";
 import * as CompletedTests from "./queries/CompletedTestsQueries";
-import { seedDatabase } from "./Seed";
+import { seedDatabase } from "./seed/Seed";
 
 type Props = {
     onReady: () => void;
