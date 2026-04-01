@@ -33,33 +33,39 @@ export default function DatabaseInitializer({ onReady }: Props) {
             <SQLiteProvider
             databaseName="local.db"
             onInit={async (db) => {
-                await db.execAsync(CategoriesQueries.DROP_TABLE);
-                await db.execAsync(CategoriesQueries.CREATE_TABLE);
-                await db.runAsync(CategoriesQueries.INSERT, ["Нет", "#ababab"]);
+                const result = await db.getFirstAsync<{ user_version: number }>(
+                    "PRAGMA user_version"
+                );
 
-                await db.execAsync(NotesQueries.DROP_TABLE);
+                const version = result?.user_version ?? 0;
+
+                await db.execAsync(CategoriesQueries.CREATE_TABLE);
+
                 await db.execAsync(NotesQueries.CREATE_TABLE);
 
-                await db.execAsync(SetsQueries.DROP_TABLE);
                 await db.execAsync(SetsQueries.CREATE_TABLE);
 
-                await db.execAsync(CardsQueries.DROP_TABLE);
                 await db.execAsync(CardsQueries.CREATE_TABLE);
 
-                await db.execAsync(TestsQueries.DROP_TABLE);
                 await db.execAsync(TestsQueries.CREATE_TABLE);
 
-                await db.execAsync(QuestionsQueries.DROP_TABLE);
                 await db.execAsync(QuestionsQueries.CREATE_TABLE);
 
-                await db.execAsync(StudiedCards.DROP_TABLE);
                 await db.execAsync(StudiedCards.CREATE_TABLE);
 
-                await db.execAsync(CompletedTests.DROP_TABLE);
                 await db.execAsync(CompletedTests.CREATE_TABLE);
 
-                if (variant === "demo") {
-                    await seedDatabase(db);
+                if (version === 0) {
+                    await db.runAsync(
+                        "INSERT OR IGNORE INTO categories (name, color) VALUES (?, ?)",
+                        ["Нет", "#ababab"]
+                    );
+                
+                    if (variant === "demo") {
+                        await seedDatabase(db);
+                    }
+
+                    await db.execAsync("PRAGMA user_version = 1");
                 }
 
                 onReady();

@@ -11,7 +11,8 @@
         "buildType": "apk"
       },
       "env": {
-        "APP_VARIANT": "dev"
+        "APP_VARIANT": "dev",
+        "NODE_ENV": "production"
       }
     },
     "preview": {
@@ -20,7 +21,8 @@
         "buildType": "apk"
       },
       "env": {
-        "APP_VARIANT": "demo"
+        "APP_VARIANT": "demo",
+        "NODE_ENV": "production"
       }
     },
     "production": {
@@ -29,7 +31,8 @@
         "buildType": "apk"
       },
       "env": {
-        "APP_VARIANT": "prod"
+        "APP_VARIANT": "prod",
+        "NODE_ENV": "production"
       }
     }
   },

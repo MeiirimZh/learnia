@@ -1,7 +1,7 @@
 import { ExpoConfig, ConfigContext } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const variant = process.env.APP_VARIANT;
+  const variant = process.env.APP_VARIANT ?? "prod";
 
   return {
     ...config,
@@ -15,7 +15,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           : "com.meiirim.zhanzhumanov.learnia"
     },
     extra: {
-      ...config.extra,
+      ...(config.extra ?? {}),
       APP_VARIANT: variant
     }
   };
